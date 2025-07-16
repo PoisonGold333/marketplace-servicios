@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <th>Día</th>
+    <th>Desde</th>
+    <th>Hasta</th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let slot of slots; let i = index">
+    <td>
+      <select [(ngModel)]="slot.dayOfWeek">
+        <option *ngFor="let d of days; let idx = index" [value]="idx">{{d}}</option>
+      </select>
+    </td>
+    <td><input type="time" [(ngModel)]="slot.startTime"></td>
+    <td><input type="time" [(ngModel)]="slot.endTime"></td>
+    <td><button (click)="slots.splice(i,1)">Eliminar</button></td>
+  </tr>
+</table>
+<button (click)="addSlot()">Agregar horario</button>
+<button (click)="save()">Guardar disponibilidad</button>

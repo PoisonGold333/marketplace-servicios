@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(CLIENT)
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  provider         Provider?          @relation("UserProvider")
+  clientBookings   Booking[]          @relation("ClientBookings")
+  clientContracts  Contract[]         @relation("ClientContracts")
+
+  @@map("users")
+}
+
+model Provider {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  companyName String?
+  nit         String?  @unique
+  address     String?
+  city        String?
+  phone       String?
+  website     String?
+  description String?
+  isActive    Boolean  @default(true)
+  rating      Float    @default(0)
+  reviewCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  user         User         @relation("UserProvider", fields: [userId], references: [id])
+  services     Service[]
+  bookings     Booking[]    @relation("ProviderBookings")
+  contracts    Contract[]   @relation("ProviderContracts")
+  availability Availability[] @relation("ProviderAvailability")
+
+  @@map("providers")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  providerId  String
+  name        String
+  description String
+  price       Float
+  duration    Int      // en minutos
+  category    String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  provider  Provider   @relation(fields: [providerId], references: [id])
+  bookings  Booking[]  @relation("ServiceBookings")
+
+  @@map("services")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  clientId      String
+  serviceId     String
+  providerId    String
+
+  // Información de la cita
+  scheduledDate DateTime
+  scheduledTime String
+  duration      Int           // en minutos
+  totalPrice    Float
+
+  // Estado de la reserva
+  status        BookingStatus @default(PENDING)
+
+  // Información del cliente
+  clientName    String
+  clientEmail   String
+  clientPhone   String?
+
+  // Notas adicionales
+  notes         String?
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relaciones
+  client    User       @relation("ClientBookings", fields: [clientId], references: [id])
+  service   Service    @relation("ServiceBookings", fields: [serviceId], references: [id])
+  provider  Provider   @relation("ProviderBookings", fields: [providerId], references: [id])
+  contracts Contract[] @relation("BookingContracts")
+
+  @@map("bookings")
+}
+
+model Contract {
+  id              String          @id @default(cuid())
+  bookingId       String
+  clientId        String
+  providerId      String
+
+  // Contenido del contrato
+  terms           String
+  conditions      String
+  totalAmount     Float
+
+  // Estado del contrato
+  status          ContractStatus  @default(DRAFT)
+
+  // Firmas digitales
+  clientSigned    Boolean         @default(false)
+  providerSigned  Boolean         @default(false)
+  clientSignedAt  DateTime?
+  providerSignedAt DateTime?
+
+  // Timestamps
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relaciones
+  booking   Booking  @relation("BookingContracts", fields: [bookingId], references: [id])
+  client    User     @relation("ClientContracts", fields: [clientId], references: [id])
+  provider  Provider @relation("ProviderContracts", fields: [providerId], references: [id])
+
+  @@map("contracts")
+}
+
+model Availability {
+  id         String   @id @default(cuid())
+  providerId String
+  dayOfWeek  Int
+  startTime  String
+  endTime    String
+  provider   Provider @relation("ProviderAvailability", fields: [providerId], references: [id])
+}
+
+enum Role {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING     // Pendiente de confirmación
+  CONFIRMED   // Confirmada por el proveedor
+  CANCELLED   // Cancelada
+  COMPLETED   // Completada
+  NO_SHOW     // Cliente no se presentó
+}
+
+enum ContractStatus {
+  DRAFT       // Borrador
+  PENDING     // Pendiente de firma
+  SIGNED      // Firmado por ambas partes
+  CANCELLED   // Cancelado
+}

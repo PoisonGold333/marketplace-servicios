@@ -1,0 +1,234 @@
+<div class="provider-services-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>📋 Mis Servicios</h1>
+    <p>Gestiona los servicios que ofreces</p>
+    
+    <button 
+      class="btn-create-service"
+      (click)="toggleCreateForm()"
+      [class.active]="showCreateForm">
+      {{ showCreateForm ? '❌ Cancelar' : '➕ Crear Nuevo Servicio' }}
+    </button>
+  </div>
+
+  <!-- Formulario de creación -->
+  <div class="create-form-section" *ngIf="showCreateForm">
+    <div class="form-container">
+      <h3>➕ Crear Nuevo Servicio</h3>
+      
+      <form [formGroup]="createServiceForm" (ngSubmit)="onSubmitCreateService()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">🏷️ Nombre del Servicio *</label>
+            <input 
+              type="text" 
+              id="name"
+              formControlName="name"
+              placeholder="Ej: Limpieza de hogar"
+              class="form-input"
+              [class.error]="createServiceForm.get('name')?.invalid && createServiceForm.get('name')?.touched">
+            
+            <div class="error-message" *ngIf="createServiceForm.get('name')?.invalid && createServiceForm.get('name')?.touched">
+              <span *ngIf="createServiceForm.get('name')?.errors?.['required']">El nombre es requerido</span>
+              <span *ngIf="createServiceForm.get('name')?.errors?.['minlength']">Mínimo 3 caracteres</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="category">📂 Categoría *</label>
+            <select 
+              id="category"
+              formControlName="category"
+              class="form-select"
+              [class.error]="createServiceForm.get('category')?.invalid && createServiceForm.get('category')?.touched">
+              <option value="">Seleccionar categoría</option>
+              <option *ngFor="let category of categories" [value]="category">
+                {{ category }}
+              </option>
+            </select>
+            
+            <div class="error-message" *ngIf="createServiceForm.get('category')?.invalid && createServiceForm.get('category')?.touched">
+              La categoría es requerida
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">📝 Descripción *</label>
+          <textarea 
+            id="description"
+            formControlName="description"
+            placeholder="Describe detalladamente tu servicio..."
+            rows="4"
+            class="form-textarea"
+            [class.error]="createServiceForm.get('description')?.invalid && createServiceForm.get('description')?.touched">
+          </textarea>
+          
+          <div class="error-message" *ngIf="createServiceForm.get('description')?.invalid && createServiceForm.get('description')?.touched">
+            <span *ngIf="createServiceForm.get('description')?.errors?.['required']">La descripción es requerida</span>
+            <span *ngIf="createServiceForm.get('description')?.errors?.['minlength']">Mínimo 10 caracteres</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">💰 Precio (COP) *</label>
+            <input 
+              type="number" 
+              id="price"
+              formControlName="price"
+              placeholder="50000"
+              min="1000"
+              class="form-input"
+              [class.error]="createServiceForm.get('price')?.invalid && createServiceForm.get('price')?.touched">
+            
+            <div class="error-message" *ngIf="createServiceForm.get('price')?.invalid && createServiceForm.get('price')?.touched">
+              <span *ngIf="createServiceForm.get('price')?.errors?.['required']">El precio es requerido</span>
+              <span *ngIf="createServiceForm.get('price')?.errors?.['min']">Precio mínimo: $1,000 COP</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="duration">⏱️ Duración (minutos) *</label>
+            <input 
+              type="number" 
+              id="duration"
+              formControlName="duration"
+              placeholder="120"
+              min="15"
+              class="form-input"
+              [class.error]="createServiceForm.get('duration')?.invalid && createServiceForm.get('duration')?.touched">
+            
+            <div class="error-message" *ngIf="createServiceForm.get('duration')?.invalid && createServiceForm.get('duration')?.touched">
+              <span *ngIf="createServiceForm.get('duration')?.errors?.['required']">La duración es requerida</span>
+              <span *ngIf="createServiceForm.get('duration')?.errors?.['min']">Duración mínima: 15 minutos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn-cancel"
+            (click)="toggleCreateForm()">
+            ❌ Cancelar
+          </button>
+          
+          <button 
+            type="submit" 
+            class="btn-submit"
+            [disabled]="createServiceForm.invalid || isCreating">
+            <span *ngIf="!isCreating">✅ Crear Servicio</span>
+            <span *ngIf="isCreating">⏳ Creando...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando tus servicios...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage && !isLoading" class="error-message">
+    <div class="error-icon">❌</div>
+    <h3>Error</h3>
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadMyServices()" class="btn-retry">🔄 Reintentar</button>
+  </div>
+
+  <!-- Lista de servicios -->
+  <div *ngIf="!isLoading && !errorMessage" class="services-section">
+    <div class="services-header">
+      <h3>📋 Tus Servicios ({{ services.length }})</h3>
+    </div>
+
+    <!-- Sin servicios -->
+    <div *ngIf="services.length === 0" class="no-services">
+      <div class="no-services-icon">📭</div>
+      <h3>No tienes servicios aún</h3>
+      <p>Crea tu primer servicio para empezar a recibir clientes</p>
+      <button class="btn-create-first" (click)="toggleCreateForm()">
+        ➕ Crear Mi Primer Servicio
+      </button>
+    </div>
+
+    <!-- Grid de servicios -->
+    <div class="services-grid" *ngIf="services.length > 0">
+      <div *ngFor="let service of services" class="service-card">
+        
+        <div class="service-header">
+          <div class="service-title">
+            <h4>{{ service.name }}</h4>
+            <span class="service-status" [class.active]="service.isActive" [class.inactive]="!service.isActive">
+              {{ service.isActive ? '🟢 Activo' : '🔴 Inactivo' }}
+            </span>
+          </div>
+          <span class="service-category">{{ service.category }}</span>
+        </div>
+
+        <div class="service-description">
+          <p>{{ service.description }}</p>
+        </div>
+
+        <div class="service-details">
+          <div class="service-price">
+            <span class="price-label">💰 Precio:</span>
+            <span class="price-value">${{ service.price | number:'1.0-0' }} COP</span>
+          </div>
+          
+          <div class="service-duration">
+            <span class="duration-label">⏱️ Duración:</span>
+            <span class="duration-value">{{ service.duration }} min</span>
+          </div>
+        </div>
+
+        <div class="service-stats">
+          <div class="stat">
+            <span class="stat-label">📅 Creado:</span>
+            <span class="stat-value">{{ service.createdAt | date:'short' }}</span>
+          </div>
+        </div>
+
+        <div class="service-actions">
+          <button class="btn-edit" (click)="editService(service)">
+            ✏️ Editar
+          </button>
+          
+          <button 
+            class="btn-toggle" 
+            [class.activate]="!service.isActive"
+            [class.deactivate]="service.isActive"
+            (click)="toggleServiceStatus(service)">
+            {{ service.isActive ? '⏸️ Desactivar' : '▶️ Activar' }}
+          </button>
+          
+          <button class="btn-delete" (click)="deleteService(service)">
+            🗑️ Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de servicios -->
+    <table *ngIf="services.length > 0">
+      <tr>
+        <th>Nombre del Servicio</th>
+        <th>Precio (COP)</th>
+        <th>Acciones</th>
+      </tr>
+      
+      <tr *ngFor="let service of services">
+        <td>{{service.name}}</td>
+        <td>{{service.price}}</td>
+        <td>
+          <button (click)="deleteService(service)">Eliminar</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

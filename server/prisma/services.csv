@@ -1,0 +1,21 @@
+name,description,price,duration,category,providerId
+Corte de Cabello,Corte profesional para hombres y mujeres,20000,30,Belleza,cmd66872t0002v76cf4v0u4s9
+Venta de Veh�culos,Venta de autos nuevos y usados,50000000,0,Automotriz,cmd66872t0002v76cf4v0u4s9
+Asesor�a Legal,Servicios de derecho civil y penal,150000,60,Legal,cmd66872t0002v76cf4v0u4s9
+Desarrollo de Software,Aplicaciones web y m�viles a medida,2000000,120,Tecnolog�a,cmd66872t0002v76cf4v0u4s9
+Clases de Ingl�s,Clases personalizadas todos los niveles,50000,60,Educaci�n,cmd66872t0002v76cf4v0u4s9
+Reparaci�n de Computadoras,Diagn�stico y reparaci�n,80000,90,Tecnolog�a,cmd66872t0002v76cf4v0u4s9
+Fotograf�a Profesional,Sesiones para eventos y retratos,120000,120,Arte,cmd66872t0002v76cf4v0u4s9
+Dise�o Gr�fico,Identidad visual y branding,100000,90,Arte,cmd66872t0002v76cf4v0u4s9
+Entrenamiento Personal,Planes de ejercicio personalizados,60000,60,Deporte,cmd66872t0002v76cf4v0u4s9
+Servicio de Plomer�a,Reparaciones y mantenimiento,70000,60,Hogar,cmd66872t0002v76cf4v0u4s9
+Electricista,Instalaciones y arreglos el�ctricos,75000,60,Hogar,cmd66872t0002v76cf4v0u4s9
+Paseo de Mascotas,Paseos diarios para perros,30000,30,Animales,cmd66872t0002v76cf4v0u4s9
+Cuidado de Ni�os,Ni�era por horas,40000,60,Hogar,cmd66872t0002v76cf4v0u4s9
+Traducci�n de Documentos,Espa�ol-Ingl�s y viceversa,35000,45,Educaci�n,cmd66872t0002v76cf4v0u4s9
+Organizaci�n de Eventos,Planeaci�n y log�stica,250000,180,Eventos,cmd66872t0002v76cf4v0u4s9
+Maquillaje Profesional,Para eventos y sesiones,90000,90,Belleza,cmd66872t0002v76cf4v0u4s9
+Clases de Matem�ticas,Refuerzo escolar todos los niveles,40000,60,Educaci�n,cmd66872t0002v76cf4v0u4s9
+Servicio de Mudanzas,Transporte y embalaje,180000,240,Log�stica,cmd66872t0002v76cf4v0u4s9
+Lavado de Autos,Lavado interior y exterior,25000,45,Automotriz,cmd66872t0002v76cf4v0u4s9
+Consultor�a Empresarial,Estrategia y gesti�n de negocios,300000,120,Negocios,cmd66872t0002v76cf4v0u4s9

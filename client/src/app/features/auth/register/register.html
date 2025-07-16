@@ -1,0 +1,68 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="header-content">
+      <h1>🏪 Marketplace de Servicios</h1>
+      <h2>Crear Cuenta</h2>
+    </div>
+    
+    <!-- MOSTRAR ERROR SI EXISTE -->
+    <div class="error-message" *ngIf="errorMessage">
+      ❌ {{ errorMessage }}
+    </div>
+    
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-field">
+        <label>👤 Nombre Completo</label>
+        <input type="text" formControlName="name" placeholder="Tu nombre completo" required>
+        <div class="error" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.errors?.['required']">
+          El nombre es requerido
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>📧 Email</label>
+        <input type="email" formControlName="email" placeholder="ejemplo@email.com" required>
+        <div class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']">
+          El email es requerido
+        </div>
+        <div class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['email']">
+          Email no válido
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>🔒 Contraseña</label>
+        <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres" required>
+        <div class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']">
+          La contraseña es requerida
+        </div>
+        <div class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']">
+          Mínimo 6 caracteres
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>👥 Tipo de Usuario</label>
+        <select formControlName="role" required>
+          <option value="CLIENT">🛒 Cliente (Busco servicios)</option>
+          <option value="PROVIDER">🔧 Proveedor (Ofrezco servicios)</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label>📱 Teléfono (Opcional)</label>
+        <input type="tel" formControlName="phone" placeholder="+57 300 123 4567">
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid || isLoading" class="register-btn">
+        <span *ngIf="isLoading" class="spinner">⏳</span>
+        {{ isLoading ? 'Creando cuenta...' : 'Crear Cuenta' }}
+      </button>
+    </form>
+
+    <div class="login-link">
+      <p>¿Ya tienes cuenta?</p>
+      <a routerLink="/login">Iniciar Sesión</a>
+    </div>
+  </div>
+</div>

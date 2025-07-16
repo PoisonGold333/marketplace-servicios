@@ -1,0 +1,233 @@
+<div class="booking-container">
+  <!-- Header -->
+  <div class="booking-header">
+    <h2>📅 Reservar Servicio</h2>
+    <div *ngIf="service" class="service-info">
+      <h3>{{ service.name }}</h3>
+      <p class="service-provider">por {{ service.provider.user.name }}</p>
+      <div class="service-details">
+        <span class="price">💰 ${{ service.price | number:'1.0-0' }} COP</span>
+        <span class="duration">⏱️ {{ service.duration }} min</span>
+        <span class="category">📂 {{ service.category }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensajes -->
+  <div *ngIf="successMessage" class="success-message">
+    <div class="success-icon">✅</div>
+    <p>{{ successMessage }}</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <div class="error-icon">❌</div>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Formulario de Reserva -->
+  <div class="booking-form-container" *ngIf="!successMessage">
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Paso 1: Seleccionar Fecha -->
+      <div class="form-step">
+        <h4>📅 Paso 1: Selecciona la fecha</h4>
+        
+        <!-- Selector de fecha -->
+        <div class="form-group">
+          <label for="scheduledDate">Fecha de la cita *</label>
+          <input 
+            type="date" 
+            id="scheduledDate"
+            formControlName="scheduledDate"
+            [min]="minDate"
+            [max]="maxDate"
+            (change)="onDateChange()"
+            class="form-input"
+            [class.error]="bookingForm.get('scheduledDate')?.invalid && bookingForm.get('scheduledDate')?.touched">
+          
+          <div class="error-text" *ngIf="bookingForm.get('scheduledDate')?.invalid && bookingForm.get('scheduledDate')?.touched">
+            La fecha es requerida
+          </div>
+        </div>
+
+        <div *ngIf="selectedDate" class="selected-date">
+          <p>📆 Fecha seleccionada: {{ getFechaFormateada(selectedDate) }}</p>
+        </div>
+      </div>
+
+      <!-- Paso 2: Seleccionar Hora -->
+      <div class="form-step" *ngIf="selectedDate">
+        <h4>🕐 Paso 2: Selecciona la hora</h4>
+        
+        <div *ngIf="isCheckingAvailability" class="loading-slots">
+          <div class="spinner"></div>
+          <p>Verificando disponibilidad...</p>
+        </div>
+
+        <!-- Cargando disponibilidad -->
+        <div *ngIf="!isCheckingAvailability && availableSlots.length === 0 && selectedDate" class="no-slots">
+          <p>❌ No hay horarios disponibles para esta fecha.</p>
+          <p>Por favor selecciona otra fecha.</p>
+        </div>
+
+        <!-- Horarios disponibles -->
+        <div *ngIf="!isCheckingAvailability && availableSlots.length > 0" class="time-slots">
+          <div class="slots-grid">
+            <button 
+              *ngFor="let slot of availableSlots"
+              type="button"
+              class="time-slot"
+              [class.selected]="selectedTimeSlot === slot"
+              (click)="selectTimeSlot(slot)">
+              {{ formatTime(slot) }}
+            </button>
+          </div>
+          
+          <div class="error-text" *ngIf="bookingForm.get('scheduledTime')?.invalid && bookingForm.get('scheduledTime')?.touched">
+            Debes seleccionar una hora
+          </div>
+        </div>
+      </div>
+
+      <!-- Paso 3: Información del Cliente -->
+      <div class="form-step" *ngIf="selectedTimeSlot">
+        <h4>👤 Paso 3: Confirma tus datos</h4>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientName">Nombre completo *</label>
+            <input 
+              type="text" 
+              id="clientName"
+              formControlName="clientName"
+              placeholder="Tu nombre completo"
+              class="form-input"
+              [class.error]="bookingForm.get('clientName')?.invalid && bookingForm.get('clientName')?.touched">
+            
+            <div class="error-text" *ngIf="bookingForm.get('clientName')?.invalid && bookingForm.get('clientName')?.touched">
+              <span *ngIf="bookingForm.get('clientName')?.errors?.['required']">El nombre es requerido</span>
+              <span *ngIf="bookingForm.get('clientName')?.errors?.['minlength']">Mínimo 2 caracteres</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="clientEmail">Correo electrónico *</label>
+            <input 
+              type="email" 
+              id="clientEmail"
+              formControlName="clientEmail"
+              placeholder="tu@email.com"
+              class="form-input"
+              [class.error]="bookingForm.get('clientEmail')?.invalid && bookingForm.get('clientEmail')?.touched">
+            
+            <div class="error-text" *ngIf="bookingForm.get('clientEmail')?.invalid && bookingForm.get('clientEmail')?.touched">
+              <span *ngIf="bookingForm.get('clientEmail')?.errors?.['required']">El email es requerido</span>
+              <span *ngIf="bookingForm.get('clientEmail')?.errors?.['email']">Email inválido</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="clientPhone">Teléfono (opcional)</label>
+          <input 
+            type="tel" 
+            id="clientPhone"
+            formControlName="clientPhone"
+            placeholder="+57 300 123 4567"
+            class="form-input"
+            [class.error]="bookingForm.get('clientPhone')?.invalid && bookingForm.get('clientPhone')?.touched">
+          
+          <div class="error-text" *ngIf="bookingForm.get('clientPhone')?.invalid && bookingForm.get('clientPhone')?.touched">
+            Formato de teléfono inválido
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Notas adicionales (opcional)</label>
+          <textarea 
+            id="notes"
+            formControlName="notes"
+            placeholder="Información adicional, requerimientos especiales, etc."
+            rows="3"
+            class="form-textarea"
+            [class.error]="bookingForm.get('notes')?.invalid && bookingForm.get('notes')?.touched">
+          </textarea>
+          
+          <div class="char-counter">
+            {{ bookingForm.get('notes')?.value?.length || 0 }}/500
+          </div>
+          
+          <div class="error-text" *ngIf="bookingForm.get('notes')?.invalid && bookingForm.get('notes')?.touched">
+            Máximo 500 caracteres
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen y Confirmación -->
+      <div class="booking-summary" *ngIf="selectedTimeSlot && service">
+        <h4>📋 Resumen de la reserva</h4>
+        
+        <div class="summary-content">
+          <div class="summary-item">
+            <span class="label">🛠️ Servicio:</span>
+            <span class="value">{{ service.name }}</span>
+          </div>
+          
+          <div class="summary-item">
+            <span class="label">🏢 Proveedor:</span>
+            <span class="value">{{ service.provider.user.name }}</span>
+          </div>
+          
+          <div class="summary-item">
+            <span class="label">📅 Fecha:</span>
+            <span class="value">{{ formatDate(selectedDate) }}</span>
+          </div>
+          
+          <div class="summary-item">
+            <span class="label">🕐 Hora:</span>
+            <span class="value">{{ formatTime(selectedTimeSlot) }}</span>
+          </div>
+          
+          <div class="summary-item">
+            <span class="label">⏱️ Duración:</span>
+            <span class="value">{{ service.duration }} minutos</span>
+          </div>
+          
+          <div class="summary-item total">
+            <span class="label">💰 Total:</span>
+            <span class="value">${{ service.price | number:'1.0-0' }} COP</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn-cancel"
+            (click)="goToMarketplace()">
+            ❌ Cancelar
+          </button>
+          
+          <button 
+            type="submit" 
+            class="btn-confirm"
+            [disabled]="bookingForm.invalid || isLoading">
+            <span *ngIf="!isLoading">✅ Confirmar Reserva</span>
+            <span *ngIf="isLoading">⏳ Procesando...</span>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Ejemplo de uso seguro -->
+    <div *ngIf="horariosDisponibles && horariosDisponibles.length > 0">
+      <div *ngFor="let slot of horariosDisponibles">
+        <button (click)="selectTimeSlot(slot.startTime + ' - ' + slot.endTime)">
+          {{ slot.startTime }} - {{ slot.endTime }}
+        </button>
+      </div>
+    </div>
+    <div *ngIf="horariosDisponibles && horariosDisponibles.length === 0 && selectedDate">
+      No hay horarios disponibles para esta fecha.
+    </div>
+  </div>
+</div>

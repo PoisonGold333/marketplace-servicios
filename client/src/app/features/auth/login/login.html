@@ -1,0 +1,53 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="header-content">
+      <h1>🏪 Marketplace de Servicios</h1>
+      <h2>Iniciar Sesión</h2>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-field">
+        <label>📧 Email</label>
+        <input 
+          type="email" 
+          formControlName="email" 
+          placeholder="ejemplo@email.com" 
+          required>
+        <div class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']">
+          El email es requerido
+        </div>
+        <div class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']">
+          Email no válido
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>🔒 Contraseña</label>
+        <input 
+          type="password" 
+          formControlName="password" 
+          placeholder="Tu contraseña" 
+          required>
+        <div class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']">
+          La contraseña es requerida
+        </div>
+        <div class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['minlength']">
+          Mínimo 6 caracteres
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        [disabled]="loginForm.invalid || isLoading" 
+        class="login-btn">
+        <span *ngIf="isLoading" class="spinner">⏳</span>
+        {{ isLoading ? 'Iniciando...' : 'Iniciar Sesión' }}
+      </button>
+    </form>
+
+    <div class="register-link">
+      <p>¿No tienes cuenta?</p>
+      <a routerLink="/register">Crear Cuenta</a>
+    </div>
+  </div>
+</div>

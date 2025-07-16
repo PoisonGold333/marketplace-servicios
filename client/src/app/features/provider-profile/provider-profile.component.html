@@ -1,0 +1,305 @@
+<div class="provider-profile-container">
+  <!-- Header del Perfil -->
+  <div class="profile-header">
+    <h1>🏢 Mi Perfil Empresarial</h1>
+    <p>Gestiona la información de tu empresa y servicios</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando tu perfil...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage && !isLoading" class="error-message">
+    <div class="error-icon">❌</div>
+    <h3>Error</h3>
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadProfile()" class="btn-retry">🔄 Reintentar</button>
+  </div>
+
+  <!-- Perfil Cargado -->
+  <div *ngIf="profile && !isLoading && !errorMessage" class="profile-content">
+    
+    <!-- Estadísticas del Perfil -->
+    <div class="profile-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3>{{ getCompletionPercentage() }}%</h3>
+          <p>Perfil Completado</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-info">
+          <h3>{{ profile.rating.toFixed(1) }}</h3>
+          <p>Calificación ({{ profile.reviewCount }} reseñas)</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🛠️</div>
+        <div class="stat-info">
+          <h3>{{ profile._count.services }}</h3>
+          <p>Servicios Activos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3>{{ profile._count.bookings }}</h3>
+          <p>Reservas Totales</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información Básica (No Editable) -->
+    <div class="info-section">
+      <div class="section-header">
+        <h3>👤 Información Personal</h3>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <label>📧 Email:</label>
+          <span>{{ profile.user.email }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label>👤 Nombre:</label>
+          <span>{{ profile.user.name }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label>📱 Teléfono Personal:</label>
+          <span>{{ profile.user.phone || 'No registrado' }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label>📅 Miembro desde:</label>
+          <span>{{ profile.createdAt | date:'mediumDate' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información Empresarial (Editable) -->
+    <div class="company-section">
+      <div class="section-header">
+        <h3>🏢 Información Empresarial</h3>
+        <button 
+          class="btn-edit"
+          (click)="toggleEdit()"
+          [class.editing]="isEditing">
+          {{ isEditing ? '❌ Cancelar' : '✏️ Editar' }}
+        </button>
+      </div>
+
+      <!-- Modo Visualización -->
+      <div *ngIf="!isEditing" class="company-display">
+        <div class="company-grid">
+          <div class="company-item">
+            <label>🏢 Nombre de la Empresa:</label>
+            <span>{{ profile.companyName || 'No registrado' }}</span>
+          </div>
+          
+          <div class="company-item">
+            <label>🆔 NIT:</label>
+            <span>{{ profile.nit || 'No registrado' }}</span>
+          </div>
+          
+          <div class="company-item">
+            <label>📍 Dirección:</label>
+            <span>{{ profile.address || 'No registrada' }}</span>
+          </div>
+          
+          <div class="company-item">
+            <label>🏙️ Ciudad:</label>
+            <span>{{ profile.city || 'No registrada' }}</span>
+          </div>
+          
+          <div class="company-item">
+            <label>📞 Teléfono Empresarial:</label>
+            <span>{{ profile.phone || 'No registrado' }}</span>
+          </div>
+          
+          <div class="company-item">
+            <label>🌐 Sitio Web:</label>
+            <span>
+              <a *ngIf="profile.website" [href]="profile.website" target="_blank" class="website-link">
+                {{ profile.website }}
+              </a>
+              <span *ngIf="!profile.website">No registrado</span>
+            </span>
+          </div>
+        </div>
+        
+        <div class="company-description">
+          <label>📝 Descripción de la Empresa:</label>
+          <p>{{ profile.description || 'No hay descripción disponible' }}</p>
+        </div>
+      </div>
+
+      <!-- Modo Edición -->
+      <div *ngIf="isEditing" class="company-form">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="companyName">🏢 Nombre de la Empresa</label>
+              <input 
+                type="text" 
+                id="companyName"
+                formControlName="companyName"
+                placeholder="Ej: TechSolutions SAS"
+                class="form-input"
+                [class.error]="profileForm.get('companyName')?.invalid && profileForm.get('companyName')?.touched">
+              
+              <div class="error-text" *ngIf="profileForm.get('companyName')?.invalid && profileForm.get('companyName')?.touched">
+                <span *ngIf="profileForm.get('companyName')?.errors?.['minlength']">Mínimo 2 caracteres</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="nit">🆔 NIT</label>
+              <input 
+                type="text" 
+                id="nit"
+                formControlName="nit"
+                placeholder="Ej: 900123456-1"
+                class="form-input"
+                [class.error]="profileForm.get('nit')?.invalid && profileForm.get('nit')?.touched">
+              
+              <div class="error-text" *ngIf="profileForm.get('nit')?.invalid && profileForm.get('nit')?.touched">
+                <span *ngIf="profileForm.get('nit')?.errors?.['pattern']">Formato: 123456789-1</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="address">📍 Dirección</label>
+              <input 
+                type="text" 
+                id="address"
+                formControlName="address"
+                placeholder="Ej: Carrera 50 #30-25"
+                class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label for="city">🏙️ Ciudad</label>
+              <input 
+                type="text" 
+                id="city"
+                formControlName="city"
+                placeholder="Ej: Medellín"
+                class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">📞 Teléfono Empresarial</label>
+              <input 
+                type="text" 
+                id="phone"
+                formControlName="phone"
+                placeholder="Ej: +57 300 123 4567"
+                class="form-input"
+                [class.error]="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+              
+              <div class="error-text" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+                <span *ngIf="profileForm.get('phone')?.errors?.['pattern']">Formato de teléfono inválido</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="website">🌐 Sitio Web</label>
+              <input 
+                type="text" 
+                id="website"
+                formControlName="website"
+                placeholder="Ej: https://miempresa.com"
+                class="form-input"
+                [class.error]="profileForm.get('website')?.invalid && profileForm.get('website')?.touched">
+              
+              <div class="error-text" *ngIf="profileForm.get('website')?.invalid && profileForm.get('website')?.touched">
+                <span *ngIf="profileForm.get('website')?.errors?.['pattern']">Debe empezar con http:// o https://</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">📝 Descripción de la Empresa</label>
+            <textarea 
+              id="description"
+              formControlName="description"
+              placeholder="Describe tu empresa, servicios y experiencia..."
+              rows="5"
+              class="form-textarea"
+              [class.error]="profileForm.get('description')?.invalid && profileForm.get('description')?.touched">
+            </textarea>
+            
+            <div class="char-counter">
+              {{ profileForm.get('description')?.value?.length || 0 }}/500 caracteres
+            </div>
+            
+            <div class="error-text" *ngIf="profileForm.get('description')?.invalid && profileForm.get('description')?.touched">
+              <span *ngIf="profileForm.get('description')?.errors?.['maxlength']">Máximo 500 caracteres</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="button" 
+              class="btn-cancel"
+              (click)="toggleEdit()">
+              ❌ Cancelar
+            </button>
+            
+            <button 
+              type="submit" 
+              class="btn-save"
+              [disabled]="profileForm.invalid || isSaving">
+              <span *ngIf="!isSaving">💾 Guardar Cambios</span>
+              <span *ngIf="isSaving">⏳ Guardando...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Enlaces Rápidos -->
+    <div class="quick-actions">
+      <h3>⚡ Acciones Rápidas</h3>
+      <div class="actions-grid">
+        <a routerLink="/my-services" class="action-card">
+          <div class="action-icon">🛠️</div>
+          <div class="action-info">
+            <h4>Gestionar Servicios</h4>
+            <p>Crear, editar y administrar tus servicios</p>
+          </div>
+        </a>
+        
+        <a routerLink="/marketplace" class="action-card">
+          <div class="action-icon">🏪</div>
+          <div class="action-info">
+            <h4>Ver Marketplace</h4>
+            <p>Explora cómo ven los clientes tus servicios</p>
+          </div>
+        </a>
+        
+        <a routerLink="/dashboard" class="action-card">
+          <div class="action-icon">📊</div>
+          <div class="action-info">
+            <h4>Dashboard</h4>
+            <p>Estadísticas y métricas de tu negocio</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

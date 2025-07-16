@@ -1,0 +1,17 @@
+<div *ngIf="contract">
+  <h2>Contrato de Servicio</h2>
+  <p><strong>Términos:</strong> {{ contract.terms }}</p>
+  <p><strong>Condiciones:</strong> {{ contract.conditions }}</p>
+  <p><strong>Total:</strong> ${{ contract.totalAmount }}</p>
+  <p><strong>Estado:</strong> {{ contract.status }}</p>
+
+  <div *ngIf="!signed && !contract.clientSigned">
+    <label>
+      <input type="checkbox" [(ngModel)]="signed"> Acepto y firmo este contrato
+    </label>
+    <button [disabled]="!signed" (click)="sign('client')">Firmar como Cliente</button>
+  </div>
+  <div *ngIf="contract.clientSigned">
+    <p>✅ Contrato firmado por el cliente.</p>
+  </div>
+</div>

@@ -1,0 +1,370 @@
+.booking-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.booking-header {
+  text-align: center;
+  margin-bottom: 30px;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+
+  .service-info {
+    h3 {
+      color: #3498db;
+      margin-bottom: 5px;
+      font-size: 1.5rem;
+    }
+
+    .service-provider {
+      color: #7f8c8d;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .service-details {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      span {
+        background: #ecf0f1;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      .price {
+        background: #d5f4e6;
+        color: #27ae60;
+      }
+    }
+  }
+}
+
+// Mensajes
+.success-message, .error-message {
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  .success-icon, .error-icon {
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0;
+    font-weight: bold;
+  }
+}
+
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+// Formulario
+.booking-form-container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-step {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid #ecf0f1;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  h4 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #bdc3c7;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+}
+
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+
+  &.error {
+    border-color: #e74c3c;
+  }
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.char-counter {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-top: 5px;
+}
+
+.error-text {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+// Fecha seleccionada
+.selected-date {
+  background: #e8f5e8;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #27ae60;
+  margin-top: 15px;
+
+  p {
+    margin: 0;
+    color: #27ae60;
+  }
+}
+
+// Horarios disponibles
+.loading-slots {
+  text-align: center;
+  padding: 40px;
+
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+  }
+
+  p {
+    color: #7f8c8d;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-slots {
+  text-align: center;
+  padding: 30px;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+
+  p {
+    margin: 5px 0;
+    color: #856404;
+  }
+}
+
+.time-slots {
+  .slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .time-slot {
+    padding: 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+
+    &:hover {
+      border-color: #3498db;
+      background: #ecf0f1;
+    }
+
+    &.selected {
+      border-color: #27ae60;
+      background: #d5f4e6;
+      color: #27ae60;
+    }
+  }
+}
+
+// Resumen
+.booking-summary {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 10px;
+  border: 2px solid #e1e8ed;
+  margin-top: 30px;
+
+  h4 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .summary-content {
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #e1e8ed;
+
+      &.total {
+        border-bottom: none;
+        font-size: 1.2rem;
+        font-weight: bold;
+        background: #e8f5e8;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+
+        .label, .value {
+          color: #27ae60;
+        }
+      }
+
+      .label {
+        color: #7f8c8d;
+        font-weight: bold;
+      }
+
+      .value {
+        color: #2c3e50;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+// Acciones
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.btn-cancel, .btn-confirm {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-cancel {
+  background: #95a5a6;
+  color: white;
+
+  &:hover {
+    background: #7f8c8d;
+  }
+}
+
+.btn-confirm {
+  background: #27ae60;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: #229954;
+  }
+
+  &:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+  }
+}
+
+@media (max-width: 768px) {
+  .booking-container {
+    padding: 15px;
+  }
+
+  .booking-header {
+    padding: 20px;
+  }
+
+  .booking-form-container {
+    padding: 20px;
+  }
+
+  .service-details {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .slots-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+  }
+}

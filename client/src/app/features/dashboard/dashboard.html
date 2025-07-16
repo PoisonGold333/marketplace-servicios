@@ -1,0 +1,120 @@
+<div class="dashboard-container">
+  <header class="header">
+    <div class="header-content">
+      <h1>🏪 Marketplace de Servicios</h1>
+      <div class="user-actions">
+        <span class="welcome-text">{{ currentUser?.name || 'Usuario' }}</span>
+        <button (click)="logout()" class="logout-btn">
+          🚪 Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <main class="content">
+    <div class="welcome-section">
+      <h2>{{ getUserWelcome() }} 🎉</h2>
+      <p>{{ getUserRole() }} - {{ getUserEmail() }}</p>
+      <p>Has iniciado sesión correctamente en el Marketplace de Servicios.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <h3>Servicios Activos</h3>
+        <span class="stat-number">12</span>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <h3>Clientes</h3>
+        <span class="stat-number">48</span>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <h3>Ingresos</h3>
+        <span class="stat-number">$2,450</span>
+      </div>
+    </div>
+
+    <div class="action-cards">
+      <div class="action-card primary">
+        <div class="card-header">
+          <h3>🔍 Buscar Servicios</h3>
+        </div>
+        <div class="card-content">
+          <p>Encuentra el servicio que necesitas de proveedores verificados</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-primary">Explorar Servicios</button>
+        </div>
+      </div>
+
+      <div class="action-card secondary">
+        <div class="card-header">
+          <h3>🔧 Mis Servicios</h3>
+        </div>
+        <div class="card-content">
+          <p>Gestiona y publica tus servicios profesionales</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-secondary">Gestionar Servicios</button>
+        </div>
+      </div>
+
+      <div class="action-card accent">
+        <div class="card-header">
+          <h3>📅 Mis Citas</h3>
+        </div>
+        <div class="card-content">
+          <p>Revisa y programa tus citas pendientes</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-accent">Ver Calendario</button>
+        </div>
+      </div>
+
+      <div class="action-card warning">
+        <div class="card-header">
+          <h3>💬 Mensajes</h3>
+        </div>
+        <div class="card-content">
+          <p>Comunícate con clientes y proveedores</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-warning">Abrir Chat</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="recent-activity">
+      <h3>📋 Actividad Reciente</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon">✅</div>
+          <div class="activity-content">
+            <p><strong>Servicio completado:</strong> Reparación de laptop</p>
+            <span class="activity-time">Hace 2 horas</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon">📩</div>
+          <div class="activity-content">
+            <p><strong>Nuevo mensaje:</strong> Cliente pregunta por disponibilidad</p>
+            <span class="activity-time">Hace 4 horas</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon">⭐</div>
+          <div class="activity-content">
+            <p><strong>Nueva reseña:</strong> 5 estrellas en servicio de plomería</p>
+            <span class="activity-time">Ayer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

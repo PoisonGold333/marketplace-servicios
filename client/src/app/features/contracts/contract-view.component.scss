@@ -1,0 +1,18 @@
+h2 {
+  color: #764ba2;
+}
+label {
+  margin-right: 1rem;
+}
+button {
+  background: #667eea;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
