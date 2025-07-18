@@ -27,11 +27,6 @@ export interface ServiceResponse {
   total: number;
 }
 
-export interface CategoriesResponse {
-  message: string;
-  data: string[];
-}
-
 export interface ProviderProfile {
   id: string;
   userId: string;
@@ -70,6 +65,10 @@ export interface UpdateProviderData {
   description?: string;
 }
 
+export interface CategoriesResponse {
+  categories: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -103,7 +102,7 @@ export class ServiceService {
 
   // Obtener categorías disponibles
   getCategories(): Observable<CategoriesResponse> {
-    return this.http.get<CategoriesResponse>(`${this.apiUrl}/categories`);
+    return this.http.get<CategoriesResponse>('http://localhost:5000/api/services/categories');
   }
 
   // Crear nuevo servicio

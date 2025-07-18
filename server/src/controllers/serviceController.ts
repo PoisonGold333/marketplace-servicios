@@ -1,61 +1,42 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import Service from '../models/Service';
+import Provider from '../models/Provider';
 
 // GET /api/services - Obtener todos los servicios
 export const getServices = async (req: Request, res: Response) => {
   try {
     console.log('📋 Obteniendo todos los servicios...');
-    
+
     const { category, search, providerId } = req.query;
-    
+
     // Construir filtros dinámicos
-    const where: any = {
-      isActive: true
-    };
-    
-    if (category) {
-      where.category = category;
-    }
-    
+    const filter: any = { isActive: true };
+
+    if (category) filter.category = category;
+    if (providerId) filter.provider = providerId;
+
     if (search) {
-      where.OR = [
-        { name: { contains: search as string, mode: 'insensitive' } },
-        { description: { contains: search as string, mode: 'insensitive' } }
+      filter.$or = [
+        { title: { $regex: search as string, $options: 'i' } },
+        { description: { $regex: search as string, $options: 'i' } }
       ];
     }
-    
-    if (providerId) {
-      where.providerId = providerId;
-    }
-    
-    const services = await prisma.service.findMany({
-      where,
-      include: {
-        provider: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true
-              }
-            }
-          }
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
-    
+
+    const services = await Service.find(filter)
+      .populate({
+        path: 'provider',
+        populate: { path: 'user', select: 'id name email' }
+      })
+      .sort({ createdAt: -1 });
+
     console.log(`✅ Encontrados ${services.length} servicios`);
-    
+
     res.json({
       message: 'Servicios obtenidos exitosamente',
       data: services,
       total: services.length
     });
-    
+
   } catch (error) {
     console.error('❌ Error obteniendo servicios:', error);
     res.status(500).json({
@@ -70,57 +51,48 @@ export const createService = async (req: Request, res: Response) => {
   try {
     console.log('🆕 Creando nuevo servicio...');
     console.log('Datos recibidos:', req.body);
-    
-    const { name, description, price, duration, category } = req.body;
-    
+
+    const { title, description, price, category, providerId } = req.body;
+
     // Validaciones básicas
-    if (!name || !price || !duration || !category) {
+    if (!title || !price || !category || !providerId) {
       return res.status(400).json({
-        error: 'Campos requeridos: name, price, duration, category'
+        error: 'Campos requeridos: title, price, category, providerId'
       });
     }
-    
-    // Por ahora crear servicios sin autenticación (para testing)
-    // Usaremos el primer proveedor que exista
-    const firstProvider = await prisma.provider.findFirst();
-    
-    if (!firstProvider) {
+
+    // Verifica que el proveedor exista
+    const provider = await Provider.findById(providerId).populate('user');
+    if (!provider) {
       return res.status(400).json({
-        error: 'No hay proveedores disponibles. Crea un usuario con rol PROVIDER primero.'
+        error: 'Proveedor no encontrado. Crea un usuario con rol PROVIDER primero.'
       });
     }
-    
-    const service = await prisma.service.create({
-      data: {
-        name,
-        description: description || '',
-        price: parseFloat(price),
-        duration: parseInt(duration),
-        category,
-        providerId: firstProvider.id
-      },
-      include: {
-        provider: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true
-              }
-            }
-          }
-        }
-      }
+
+    const service = new Service({
+      title,
+      description: description || '',
+      price: parseFloat(price),
+      category,
+      provider: provider._id
     });
-    
-    console.log('✅ Servicio creado:', service.id);
-    
+
+    await service.save();
+
+    // Vuelve a buscar el servicio para hacer populate
+    const servicePopulated = await Service.findById(service._id)
+      .populate({
+        path: 'provider',
+        populate: { path: 'user', select: 'id name email' }
+      });
+
+    console.log('✅ Servicio creado:', service._id);
+
     res.status(201).json({
       message: 'Servicio creado exitosamente',
-      data: service
+      data: servicePopulated
     });
-    
+
   } catch (error) {
     console.error('❌ Error creando servicio:', error);
     res.status(500).json({
@@ -145,19 +117,18 @@ export const getCategories = async (req: Request, res: Response) => {
       'Salud y Bienestar',
       'Otros'
     ];
-    
+
     res.json({
       message: 'Categorías obtenidas exitosamente',
       data: categories
     });
-    
+
   } catch (error) {
     console.error('❌ Error obteniendo categorías:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
-// ✨ AGREGAR ESTE MÉTODO AL FINAL DEL ARCHIVO
 // GET /api/services/:id - Obtener servicio por ID
 export const getServiceById = async (req: Request, res: Response) => {
   try {
@@ -165,22 +136,11 @@ export const getServiceById = async (req: Request, res: Response) => {
 
     console.log('🔍 Obteniendo servicio por ID:', id);
 
-    const service = await prisma.service.findUnique({
-      where: { id },
-      include: {
-        provider: {
-          include: {
-            user: {
-              select: {
-                name: true,
-                email: true,
-                phone: true
-              }
-            }
-          }
-        }
-      }
-    });
+    const service = await Service.findById(id)
+      .populate({
+        path: 'provider',
+        populate: { path: 'user', select: 'name email phone' }
+      });
 
     if (!service) {
       return res.status(404).json({
@@ -188,7 +148,7 @@ export const getServiceById = async (req: Request, res: Response) => {
       });
     }
 
-    console.log('✅ Servicio encontrado:', service.name);
+    console.log('✅ Servicio encontrado:', service.title);
 
     res.json({
       message: 'Servicio obtenido exitosamente',

@@ -6,8 +6,8 @@ import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
-import { PrismaClient } from '@prisma/client';
 import { errorHandler } from './middleware/errorHandler';
 import { notFound } from './middleware/notFound';
 
@@ -18,6 +18,7 @@ import providerRoutes from './routes/providers';
 import availabilityRoutes from './routes/availability';
 import contractRoutes from './routes/contracts';
 import bookingRoutes from './routes/bookings';
+import reviewRoutes from './routes/reviews';
 
 // import { handleSocketConnection } from './socket/socketHandler'; // ← COMENTAR TEMPORALMENTE
 
@@ -31,8 +32,6 @@ const io = new Server(server, {
     credentials: true
   }
 });
-
-export const prisma = new PrismaClient();
 
 app.use(helmet());
 
@@ -69,6 +68,7 @@ app.use('/api/providers', providerRoutes);
 app.use('/api/availability', availabilityRoutes);
 app.use('/api/contracts', contractRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Marketplace API funcionando!' });
@@ -86,17 +86,16 @@ app.get('/health', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Socket.io (comentado temporalmente)
-// handleSocketConnection(io);
-
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  await prisma.$disconnect();
-  process.exit(0);
-});
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/marketplace')
+  .then(() => {
+    console.log('🟢 Conectado a MongoDB');
+  })
+  .catch(err => {
+    console.error('🔴 Error conectando a MongoDB:', err);
+  });

@@ -150,4 +150,18 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
+
+  /**
+   * Enviar correo para restablecer contraseña
+   */
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/auth/forgot-password`, { email });
+  }
+
+  /**
+   * Restablecer contraseña
+   */
+  resetPassword(token: string, password: string) {
+    return this.http.post(`${this.API_URL}/reset-password/${token}`, { password });
+  }
 }

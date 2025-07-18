@@ -36,14 +36,22 @@
         </div>
       </div>
 
+      <div class="error" *ngIf="errorMsg">
+        {{ errorMsg }}
+      </div>
+
       <button 
         type="submit" 
-        [disabled]="loginForm.invalid || isLoading" 
+        [disabled]="loginForm.invalid" 
         class="login-btn">
         <span *ngIf="isLoading" class="spinner">⏳</span>
         {{ isLoading ? 'Iniciando...' : 'Iniciar Sesión' }}
       </button>
     </form>
+
+    <div class="forgot-link-container">
+      <a routerLink="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
+    </div>
 
     <div class="register-link">
       <p>¿No tienes cuenta?</p>

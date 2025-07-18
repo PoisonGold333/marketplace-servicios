@@ -1,23 +1,32 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import Availability from '../models/Availability';
 
 // Obtener disponibilidad del proveedor
 export const getAvailability = async (req: Request, res: Response) => {
-  const providerId = req.params.providerId;
-  const availability = await prisma.availability.findMany({ where: { providerId } });
-  res.json({ data: availability });
+  try {
+    const providerId = req.params.providerId;
+    const availability = await Availability.find({ provider: providerId });
+    res.json({ data: availability });
+  } catch (error) {
+    res.status(500).json({ error: 'Error obteniendo disponibilidad' });
+  }
 };
 
 // Guardar/actualizar disponibilidad
 export const setAvailability = async (req: Request, res: Response) => {
-  const providerId = req.params.providerId;
-  const { slots } = req.body; // [{dayOfWeek, startTime, endTime}, ...]
-  // Borra la anterior
-  await prisma.availability.deleteMany({ where: { providerId } });
-  // Crea la nueva
-  await prisma.availability.createMany({
-    data: slots.map((slot: any) => ({ ...slot, providerId }))
-  });
-  res.json({ message: 'Disponibilidad actualizada' });
+  try {
+    const providerId = req.params.providerId;
+    const { slots } = req.body; // [{dayOfWeek, startTime, endTime}, ...]
+
+    // Borra la anterior
+    await Availability.deleteMany({ provider: providerId });
+
+    // Crea la nueva
+    const newSlots = slots.map((slot: any) => ({ ...slot, provider: providerId }));
+    await Availability.insertMany(newSlots);
+
+    res.json({ message: 'Disponibilidad actualizada' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error actualizando disponibilidad' });
+  }
 };

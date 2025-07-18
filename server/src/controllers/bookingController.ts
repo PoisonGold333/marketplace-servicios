@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import Availability from '../models/Availability';
 
 // Consulta disponibilidad de un proveedor por fecha
 export const getAvailabilityByProviderAndDate = async (req: Request, res: Response) => {
@@ -19,12 +18,12 @@ export const getAvailabilityByProviderAndDate = async (req: Request, res: Respon
   console.log('🟢 providerId recibido:', providerId);
   console.log('🟢 dayOfWeek calculado:', dayOfWeek);
 
-  const slots = await prisma.availability.findMany({
-    where: {
-      providerId,
-      dayOfWeek,
-    },
+  // Busca los slots de disponibilidad en MongoDB
+  const slots = await Availability.find({
+    provider: providerId,
+    dayOfWeek: dayOfWeek,
   });
+
   console.log('Consulta disponibilidad:', { providerId, dayOfWeek, slots });
 
   res.json({ data: slots });

@@ -14,8 +14,9 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./marketplace.scss']
 })
 export class MarketplaceComponent implements OnInit {
-  services: Service[] = [];
+[x: string]: any;
   categories: string[] = [];
+  services: any[] = [];
   isLoading = true;
   errorMessage = '';
   
@@ -41,7 +42,7 @@ export class MarketplaceComponent implements OnInit {
     this.serviceService.getServices().subscribe({
       next: (response) => {
         console.log('✅ Servicios cargados:', response.data);
-        this.services = response.data;
+        this.services = response.data || [];
         this.isLoading = false;
       },
       error: (error) => {
@@ -55,11 +56,12 @@ export class MarketplaceComponent implements OnInit {
   loadCategories(): void {
     this.serviceService.getCategories().subscribe({
       next: (response) => {
-        console.log('✅ Categorías cargadas:', response.data);
-        this.categories = response.data;
+        this.categories = response.categories || [];
+        console.log('✅ Categorías cargadas:', this.categories);
       },
       error: (error) => {
         console.error('❌ Error cargando categorías:', error);
+        this.categories = [];
       }
     });
   }
@@ -107,5 +109,13 @@ export class MarketplaceComponent implements OnInit {
   contactProvider(service: any): void {
     // TODO: Implementar contacto con proveedor
     console.log('📞 Contactando proveedor:', service);
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+
+  goToRegister(): void {
+    this.router.navigate(['/register']);
   }
 }

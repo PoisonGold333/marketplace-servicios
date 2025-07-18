@@ -1,191 +1,101 @@
 import { Request, Response } from 'express';
+import User from '../models/User';
 import bcrypt from 'bcryptjs';
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// Solicitar recuperación de contraseña (versión simplificada)
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email, newPassword } = req.body;
+  if (!email || !newPassword) {
+    return res.status(400).json({ error: 'Email y nueva contraseña requeridos' });
+  }
 
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  res.json({ message: 'Contraseña restablecida correctamente' });
+};
+
+// Restablecer contraseña
+export const resetPassword = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: new Date() }
+  });
+
+  if (!user) return res.status(400).json({ error: 'Token inválido o expirado' });
+
+  user.password = await bcrypt.hash(password, 10);
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.json({ message: 'Contraseña restablecida correctamente' });
+};
+
+// Registro de usuario
 export const register = async (req: Request, res: Response) => {
   try {
-    console.log('🔄 Procesando registro con datos:', req.body);
-    
-    const { name, email, password, role, phone } = req.body;
-
-    // Validar datos requeridos
+    const { name, email, password, role } = req.body;
     if (!name || !email || !password || !role) {
-      console.log('❌ Datos faltantes:', { name, email, password: !!password, role });
-      return res.status(400).json({
-        error: 'Todos los campos son requeridos: name, email, password, role'
-      });
+      return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
-    // Verificar si el usuario ya existe
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
-
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      console.log('❌ Usuario ya existe:', email);
-      return res.status(409).json({
-        error: 'El usuario ya existe con este email'
-      });
+      return res.status(400).json({ error: 'El email ya está registrado' });
     }
 
-    // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(password, 12);
-    console.log('✅ Contraseña encriptada');
 
-    // Crear usuario
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        role: role as 'CLIENT' | 'PROVIDER',
-        phone: phone || null
-      }
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role
     });
 
-    console.log('✅ Usuario creado:', user.id);
+    await user.save();
 
-    // Si es PROVIDER, crear registro de provider
-    if (role === 'PROVIDER') {
-      await prisma.provider.create({
-        data: {
-          userId: String(user.id),
-          description: `Proveedor de servicios: ${name}`
-        }
-      });
-      console.log('✅ Registro de provider creado');
-    }
-
-    // Generar JWT
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'fallback-secret-key',
-      { expiresIn: '7d' }
-    );
-
-    console.log('✅ Token generado');
-
-    // Respuesta sin contraseña
-    const userResponse = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      phone: user.phone
-    };
-
-    res.status(201).json({
-      message: 'Usuario registrado exitosamente',
-      user: userResponse,
-      token
-    });
-
+    res.status(201).json({ message: 'Usuario registrado correctamente' });
   } catch (error) {
-    console.error('❌ Error en register:', error);
-    res.status(500).json({
-      error: 'Error interno del servidor',
-      details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
-    });
+    console.error(error);
+    res.status(500).json({ error: 'Error al registrar usuario' });
   }
 };
 
+// Login de usuario
 export const login = async (req: Request, res: Response) => {
   try {
-    console.log('\n🔄 === PROCESANDO LOGIN ===');
-    console.log('Body recibido:', req.body);
-    console.log('Headers:', req.headers);
-    
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      console.log('❌ Faltan datos:', { email: !!email, password: !!password });
-      return res.status(400).json({
-        error: 'Email y contraseña son requeridos'
-      });
-    }
-
-    console.log('🔍 Buscando usuario con email:', email);
-
-    // Buscar usuario
-    const user = await prisma.user.findUnique({
-      where: { email },
-      include: {
-        provider: true
-      }
-    });
-
-    console.log('👤 Usuario encontrado:', user ? 'SÍ' : 'NO');
-    if (user) {
-      console.log('👤 Datos del usuario:', {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        hasProvider: !!user.provider
-      });
-    }
-
+    const user = await User.findOne({ email });
     if (!user) {
-      console.log('❌ Usuario no encontrado:', email);
-      return res.status(401).json({
-        error: 'Credenciales inválidas'
-      });
+      return res.status(400).json({ error: 'Usuario no encontrado' });
     }
-
-    console.log('🔒 Verificando contraseña...');
-    // Verificar contraseña
-    const validPassword = await bcrypt.compare(password, user.password);
-    console.log('🔒 Contraseña válida:', validPassword);
-    
-    if (!validPassword) {
-      console.log('❌ Contraseña incorrecta para:', email);
-      return res.status(401).json({
-        error: 'Credenciales inválidas'
-      });
+    if (!user.password) {
+      return res.status(400).json({ error: 'El usuario no tiene contraseña establecida' });
     }
-
-    console.log('🎫 Generando JWT...');
-    // Generar JWT
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'fallback-secret-key',
-      { expiresIn: '7d' }
-    );
-
-    console.log('✅ JWT generado exitosamente');
-
-    // Respuesta sin contraseña
-    const userResponse = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      phone: user.phone,
-      provider: user.provider
-    };
-
-    console.log('✅ Enviando respuesta exitosa');
-    
+    const isMatch = await bcrypt.compare(password, user.password as string);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Contraseña incorrecta' });
+    }
+    // Genera un token JWT (ajusta tu secret)
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
     res.json({
       message: 'Login exitoso',
-      user: userResponse,
+      user,
       token
     });
-
   } catch (error) {
-    console.error('❌ ERROR CRÍTICO EN LOGIN:', error);
-    
-    // Verificar si error es una instancia de Error
-    if (error instanceof Error) {
-      console.error('❌ Stack trace:', error.stack);
-    }
-    
-    res.status(500).json({
-      error: 'Error interno del servidor',
-      details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
-    });
+    console.error(error);
+    res.status(500).json({ error: 'Error en el login' });
   }
 };

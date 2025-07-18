@@ -1,56 +1,39 @@
 /// <reference path="../types/express/index.d.ts" />
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import Provider from '../models/Provider';
+import Service from '../models/Service';
+import User from '../models/User';
 
-// Obtener perfil de proveedor
+// Obtener perfil de proveedor (privado)
 export const getProviderProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;
 
-    console.log('📋 Obteniendo perfil del proveedor:', userId);
-
-    const provider = await prisma.provider.findUnique({
-      where: { userId },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true
-          }
-        },
-        services: {
-          select: {
-            id: true,
-            name: true,
-            category: true,
-            price: true,
-            isActive: true
-          }
-        },
-        _count: {
-          select: {
-            services: true,
-            bookings: true
-          }
-        }
-      }
-    });
+    const provider = await Provider.findOne({ user: userId })
+      .populate({
+        path: 'user',
+        select: 'id name email phone'
+      });
 
     if (!provider) {
       return res.status(404).json({ error: 'Proveedor no encontrado' });
     }
 
-    console.log('✅ Perfil obtenido exitosamente');
-    
+    const services = await Service.find({ provider: provider._id });
+    const totalServices = services.length;
+
     res.json({
       message: 'Perfil obtenido exitosamente',
-      data: provider
+      data: {
+        ...provider.toObject(),
+        services,
+        stats: {
+          totalServices
+        }
+      }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error obteniendo perfil:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
@@ -73,13 +56,7 @@ export const updateProviderProfile = async (req: Request, res: Response) => {
       description
     } = req.body;
 
-    console.log('📝 Actualizando perfil empresarial:', userId);
-    console.log('Datos recibidos:', req.body);
-
-    // Verificar que el proveedor existe
-    const existingProvider = await prisma.provider.findUnique({
-      where: { userId }
-    });
+    const existingProvider = await Provider.findOne({ user: userId });
 
     if (!existingProvider) {
       return res.status(404).json({ error: 'Proveedor no encontrado' });
@@ -87,50 +64,36 @@ export const updateProviderProfile = async (req: Request, res: Response) => {
 
     // Verificar NIT único si se proporciona y es diferente al actual
     if (nit && nit !== existingProvider.nit) {
-      const nitExists = await prisma.provider.findUnique({
-        where: { nit }
-      });
-      
+      const nitExists = await Provider.findOne({ nit });
       if (nitExists) {
-        return res.status(400).json({ 
-          error: 'El NIT ya está registrado por otro proveedor' 
+        return res.status(400).json({
+          error: 'El NIT ya está registrado por otro proveedor'
         });
       }
     }
 
-    // Preparar datos para actualización (solo campos que se enviaron)
-    const updateData: any = {};
-    if (companyName !== undefined) updateData.companyName = companyName;
-    if (nit !== undefined) updateData.nit = nit;
-    if (address !== undefined) updateData.address = address;
-    if (city !== undefined) updateData.city = city;
-    if (phone !== undefined) updateData.phone = phone;
-    if (website !== undefined) updateData.website = website;
-    if (description !== undefined) updateData.description = description;
+    // Actualizar campos solo si existen en el body
+    if (companyName !== undefined) existingProvider.companyName = companyName;
+    if (nit !== undefined) existingProvider.nit = nit;
+    if (address !== undefined) existingProvider.address = address;
+    if (city !== undefined) existingProvider.city = city;
+    if (phone !== undefined) existingProvider.phone = phone;
+    if (website !== undefined) existingProvider.website = website;
+    if (description !== undefined) existingProvider.description = description;
 
-    const updatedProvider = await prisma.provider.update({
-      where: { userId },
-      data: updateData,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true
-          }
-        }
-      }
-    });
+    await existingProvider.save();
 
-    console.log('✅ Perfil actualizado exitosamente');
-    
+    // Actualizar también el teléfono en el usuario si se envía
+    if (phone !== undefined) {
+      await User.findByIdAndUpdate(userId, { phone });
+    }
+
     res.json({
       message: 'Perfil empresarial actualizado exitosamente',
-      data: updatedProvider
+      data: existingProvider
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error actualizando perfil:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
@@ -139,49 +102,31 @@ export const updateProviderProfile = async (req: Request, res: Response) => {
   }
 };
 
-// GET /api/providers/public/:id - Obtener perfil público de un proveedor
+// Obtener perfil público de un proveedor
 export const getPublicProviderProfile = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    console.log('🔍 Obteniendo perfil público del proveedor:', id);
-
-    const provider = await prisma.provider.findUnique({
-      where: { id },
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true
-          }
-        },
-        services: {
-          where: { isActive: true },
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            price: true,
-            duration: true,
-            category: true
-          }
-        },
-        _count: {
-          select: {
-            services: true,
-            bookings: true
-          }
-        }
-      }
-    });
+    const provider = await Provider.findById(id)
+      .populate({
+        path: 'user',
+        select: 'name email'
+      });
 
     if (!provider) {
       return res.status(404).json({ error: 'Proveedor no encontrado' });
     }
 
-    // Ocultar información sensible para perfil público
+    // Obtener servicios activos
+    const services = await Service.find({ provider: provider._id, isActive: true });
+
+    // Manejar posibles undefined en provider.user
+    const userName = (provider.user && typeof provider.user === 'object' && 'name' in provider.user)
+      ? (provider.user as any).name
+      : undefined;
+
     const publicProfile = {
-      id: provider.id,
+      id: provider._id,
       companyName: provider.companyName,
       city: provider.city,
       description: provider.description,
@@ -190,23 +135,21 @@ export const getPublicProviderProfile = async (req: Request, res: Response) => {
       reviewCount: provider.reviewCount,
       isActive: provider.isActive,
       user: {
-        name: provider.user.name
+        name: userName
       },
-      services: provider.services,
+      services,
       stats: {
-        totalServices: provider._count.services,
-        totalBookings: provider._count.bookings
+        totalServices: services.length,
+        // totalBookings: bookingsCount
       }
     };
 
-    console.log('✅ Perfil público obtenido');
-    
     res.json({
       message: 'Perfil público obtenido exitosamente',
       data: publicProfile
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error obteniendo perfil público:', error);
     res.status(500).json({
       error: 'Error interno del servidor',

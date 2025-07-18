@@ -132,6 +132,28 @@
   }
 }
 
+.forgot-link-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+
+.forgot-link {
+  color: #0984e3;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.forgot-link:hover {
+  color: #00b894;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

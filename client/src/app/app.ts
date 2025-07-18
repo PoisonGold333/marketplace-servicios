@@ -1,12 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterModule,
+    FormsModule,
+    HttpClientModule
+  ],
   template: `
     <div class="app-container">
       <!-- Navigation Header -->

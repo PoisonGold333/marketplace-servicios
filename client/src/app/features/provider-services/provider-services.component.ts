@@ -52,14 +52,15 @@ export class ProviderServicesComponent implements OnInit {
     this.loadProviderProfile();
   }
 
+  // Carga los servicios del proveedor
   loadMyServices(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
     this.serviceService.getServices().subscribe({
       next: (response) => {
-        console.log('✅ Servicios cargados:', response);
-        this.services = response.data;
+        // Si tu backend responde { data: [...] }
+        this.services = response.data || [];
         this.isLoading = false;
       },
       error: (error) => {
@@ -70,17 +71,21 @@ export class ProviderServicesComponent implements OnInit {
     });
   }
 
+  // Carga las categorías disponibles
   loadCategories(): void {
     this.serviceService.getCategories().subscribe({
       next: (response) => {
-        this.categories = response.data;
+        // Si tu backend responde { categories: [...] }
+        this.categories = response.categories || [];
       },
       error: (error) => {
         console.error('❌ Error cargando categorías:', error);
+        this.categories = [];
       }
     });
   }
 
+  // Carga el perfil del proveedor
   loadProviderProfile(): void {
     this.providerService.getMyProfile().subscribe({
       next: (response) => {
