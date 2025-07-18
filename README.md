@@ -1,68 +1,95 @@
 # Proyecto Integrador 3 - Marketplace de Servicios
 
-Este proyecto es un marketplace de servicios desarrollado con Node.js, Prisma, y Angular.
+Este proyecto es un marketplace de servicios desarrollado con **Node.js (Express, MongoDB)** para el backend y **Angular** para el frontend.
+
+---
 
 ## 🚀 Requisitos
 
 - Node.js (v18 o superior recomendado)
 - npm
-- PostgreSQL o MySQL (según tu configuración de Prisma)
+- MongoDB (Atlas o local)
 - Git
+
+---
 
 ## ⚙️ Instalación
 
-1. **Clona el repositorio:**
-   ```bash
-   git clone https://github.com/Gabriel-Aguilar-e/Proyecto_Integrador.git
-   cd Proyecto_Integrador
-   ```
+### 1. Clona el repositorio
 
-2. **Instala dependencias del backend:**
-   ```bash
-   cd marketplace-servicios/server
-   npm install
-   ```
+```bash
+git clone https://github.com/PoisonGold333/marketplace-servicios.git
+cd marketplace-servicios
+```
 
-3. **Configura las variables de entorno:**
-   - Crea un archivo `.env` en `marketplace-servicios/server` con tu conexión a la base de datos.
-   - Ejemplo:
-     ```
-     DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/tu_basededatos"
-     ```
+### 2. Configura las variables de entorno
 
-4. **Ejecuta las migraciones y pobla la base de datos:**
-   ```bash
-   npx prisma migrate deploy
-   npx ts-node prisma/seed-users-providers.ts
-   npx ts-node prisma/seed-provider.ts
-   npx ts-node prisma/seed-availability.ts
-   ```
+Copia el archivo `.env.example` como `.env` en la carpeta `server` y edítalo con tus datos de MongoDB y correo (si usas recuperación por email):
 
-5. **Inicia el backend:**
-   ```bash
-   npm run dev
-   ```
+```bash
+cd server
+# Edita el archivo .env con tus datos reales
+```
 
-6. **Instala dependencias del frontend:**
-   ```bash
-   cd ../client
-   npm install
-   ```
+Ejemplo de `.env`:
 
-7. **Inicia el frontend:**
-   ```bash
-   npm start
-   ```
-   o
-   ```bash
-   ng serve
-   ```
+```
+MONGODB_URI=mongodb+srv://usuario:contraseña@cluster.mongodb.net/tu_basededatos
+PORT=5000
+CLIENT_URL=http://localhost:4200
+JWT_SECRET=tu_clave_secreta_segura
+```
+
+---
+
+### 3. Instala dependencias del backend
+
+```bash
+npm install
+```
+
+---
+
+### 4. Inicia el backend
+
+```bash
+npm run dev
+```
+
+El backend corre en [http://localhost:5000](http://localhost:5000)
+
+---
+
+### 5. Instala dependencias del frontend
+
+```bash
+cd ../client
+npm install
+```
+
+---
+
+### 6. Inicia el frontend
+
+```bash
+npm start
+```
+o
+```bash
+ng serve
+```
+
+El frontend corre en [http://localhost:4200](http://localhost:4200)
+
+---
 
 ## 📝 Notas
 
-- Si necesitas poblar más usuarios/proveedores, edita y ejecuta los scripts de seed en la carpeta `prisma`.
+- El flujo de recuperación de contraseña es **directo**: el usuario ingresa su correo y nueva contraseña, y se actualiza sin envío de email.
+- Si necesitas poblar la base de datos, puedes hacerlo manualmente o crear scripts según tus necesidades.
 - Asegúrate de que el backend esté corriendo antes de usar el frontend.
-- Si tienes problemas con la base de datos, revisa la configuración en `.env`.
+
+---
 
 ## 🤝 Colaboradores
 
@@ -70,4 +97,4 @@ Este proyecto es un marketplace de servicios desarrollado con Node.js, Prisma, y
 
 ---
 
-¡Listo! Ahora puedes empezar a trabajar y colaborar en el proyecto.
+¡Listo! Ahora puedes trabajar y colaborar en el proyecto.
