@@ -57,5 +57,14 @@
       <p>¿No tienes cuenta?</p>
       <a routerLink="/register">Crear Cuenta</a>
     </div>
+
+    <div class="google-btn-container">
+      <button (click)="loginWithGoogle()" class="google-btn">
+        <span class="google-logo">
+          <img src="assets/google-logo.svg" alt="Google" width="22" height="22" />
+        </span>
+        <span>Iniciar sesión con Gmail</span>
+      </button>
+    </div>
   </div>
 </div>

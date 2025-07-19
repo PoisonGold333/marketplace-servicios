@@ -60,6 +60,15 @@
       </button>
     </form>
 
+    <div class="google-btn-container">
+      <button (click)="loginWithGoogle()" class="google-btn">
+        <span class="google-logo">
+          <img src="assets/google-logo.svg" alt="Google" width="22" height="22" />
+        </span>
+        <span>Registrarse con Google</span>
+      </button>
+    </div>
+
     <div class="login-link">
       <p>¿Ya tienes cuenta?</p>
       <a routerLink="/login">Iniciar Sesión</a>

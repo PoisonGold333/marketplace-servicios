@@ -7,7 +7,10 @@ import User from '../models/User';
 // Obtener perfil de proveedor (privado)
 export const getProviderProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    if (!req.user) {
+      return res.status(401).json({ message: 'No autorizado' });
+    }
+    const userId = (req.user as any).id;
 
     const provider = await Provider.findOne({ user: userId })
       .populate({
@@ -45,7 +48,10 @@ export const getProviderProfile = async (req: Request, res: Response) => {
 // Actualizar perfil de proveedor
 export const updateProviderProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    if (!req.user) {
+      return res.status(401).json({ message: 'No autorizado' });
+    }
+    const userId = (req.user as any).id;
     const {
       companyName,
       nit,

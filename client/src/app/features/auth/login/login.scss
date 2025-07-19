@@ -154,6 +154,35 @@
   cursor: pointer;
 }
 
+.google-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #444;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  transition: background 0.2s, box-shadow 0.2s;
+  gap: 12px; // Espacio entre logo y texto
+}
+
+.google-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

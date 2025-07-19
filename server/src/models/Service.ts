@@ -1,11 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const serviceSchema = new mongoose.Schema({
-  provider: { type: mongoose.Schema.Types.ObjectId, ref: 'Provider', required: true },
-  title: String,
-  description: String,
-  category: String,
-  price: Number,
+export interface IService extends Document {
+  nombre: string;
+  descripcion: string;
+  categoria: string;
+  precio: number;
+}
+
+const ServiceSchema: Schema = new Schema({
+  nombre: { type: String, required: true },
+  descripcion: { type: String, required: true },
+  categoria: { type: String, required: true },
+  precio: { type: Number, required: true }
 });
 
-export default mongoose.model('Service', serviceSchema);
+export default mongoose.model<IService>('Service', ServiceSchema);

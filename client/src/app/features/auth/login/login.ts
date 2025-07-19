@@ -70,4 +70,8 @@ export class LoginComponent {
       }
     });
   }
+
+  loginWithGoogle() {
+    window.location.href = 'http://localhost:5000/api/auth/google';
+  }
 }

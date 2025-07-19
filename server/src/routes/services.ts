@@ -23,14 +23,33 @@ router.get('/categories', (req, res) => {
 // Obtener todos los servicios (público)
 router.get('/', async (req, res) => {
   try {
-    const services = await Service.find()
-      .populate({
-        path: 'provider',
-        populate: { path: 'user', select: 'name email' }
-      });
-    res.json(services);
-  } catch (error) {
-    res.status(500).json({ error: 'Error obteniendo servicios' });
+    const servicios = await Service.find();
+    const data = servicios.map((s: any) => ({
+      id: s._id,
+      name: s.nombre,
+      description: s.descripcion,
+      price: s.precio,
+      duration: s.duracion ?? 60,
+      category: s.categoria,
+      isActive: true,
+      createdAt: s.createdAt ?? new Date(),
+      provider: {
+        id: '',
+        user: {
+          id: '',
+          name: '',
+          email: ''
+        }
+      }
+    }));
+
+    res.json({
+      message: 'Servicios obtenidos correctamente',
+      data,
+      total: data.length
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener servicios', data: [], total: 0 });
   }
 });
 
