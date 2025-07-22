@@ -1,17 +1,17 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
+import { ProfileComponent } from './features/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/marketplace', pathMatch: 'full' },
   
-  // Main routes (solo las que existen)
   { 
     path: 'marketplace', 
     loadComponent: () => import('./features/marketplace/marketplace.component').then(m => m.MarketplaceComponent) 
   },
   { 
     path: 'my-profile', 
-    loadComponent: () => import('./features/provider-profile/provider-profile.component').then(m => m.ProviderProfileComponent) 
+    component: ProfileComponent 
   },
   { 
     path: 'my-services', 

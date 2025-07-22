@@ -15,14 +15,13 @@ import passport from './config/passport';
 
 // Routes
 import authRoutes from './routes/auth';
-import serviceRoutes from './routes/services';
-import providerRoutes from './routes/providers';
+import serviceRoutes from './routes/serviceRoutes';
+import providersRoutes from './routes/providers';
 import availabilityRoutes from './routes/availability';
 import contractRoutes from './routes/contracts';
 import bookingRoutes from './routes/bookings';
 import reviewRoutes from './routes/reviews';
-
-// import { handleSocketConnection } from './socket/socketHandler'; // ← COMENTAR TEMPORALMENTE
+import profileRoutes from './routes/profileRoutes';
 
 dotenv.config();
 
@@ -74,11 +73,12 @@ app.use((req, res, next) => {
 // Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
-app.use('/api/providers', providerRoutes);
+app.use('/api', providersRoutes);
 app.use('/api/availability', availabilityRoutes);
 app.use('/api/contracts', contractRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/profile', profileRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Marketplace API funcionando!' });
@@ -92,9 +92,9 @@ app.get('/health', (req, res) => {
   res.status(200).json({ message: 'Server is running!' });
 });
 
-// Error handling
-app.use(notFound);
-app.use(errorHandler);
+// Error handling (deben ir al final)
+app.use(notFound);     
+app.use(errorHandler); 
 
 const PORT = process.env.PORT || 5000;
 

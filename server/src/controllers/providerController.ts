@@ -1,4 +1,3 @@
-/// <reference path="../types/express/index.d.ts" />
 import { Request, Response } from 'express';
 import Provider from '../models/Provider';
 import Service from '../models/Service';
@@ -12,6 +11,7 @@ export const getProviderProfile = async (req: Request, res: Response) => {
     }
     const userId = (req.user as any).id;
 
+    // Busca el proveedor asociado al usuario autenticado y popula los datos del usuario
     const provider = await Provider.findOne({ user: userId })
       .populate({
         path: 'user',
@@ -19,16 +19,25 @@ export const getProviderProfile = async (req: Request, res: Response) => {
       });
 
     if (!provider) {
+      // Si no existe, devuelve error 404
       return res.status(404).json({ error: 'Proveedor no encontrado' });
     }
 
+    // Obtén los servicios de este proveedor
     const services = await Service.find({ provider: provider._id });
     const totalServices = services.length;
+
+    // Extrae el email del usuario poblado
+    const userEmail =
+      provider.user && typeof provider.user === 'object' && 'email' in provider.user
+        ? (provider.user as any).email
+        : undefined;
 
     res.json({
       message: 'Perfil obtenido exitosamente',
       data: {
         ...provider.toObject(),
+        email: userEmail,
         services,
         stats: {
           totalServices

@@ -1,0 +1,79 @@
+<div class="profile-container">
+  <h2>Mi Perfil Empresarial</h2>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+    <div class="avatar-section">
+      <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" class="avatar-img"/>
+      <div *ngIf="isEditing">
+        <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
+        <button *ngIf="avatarPreview" type="button" (click)="removeAvatar()" class="btn-secondary-action">Eliminar Avatar</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Nombre</label>
+      <input formControlName="name" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+        El nombre es obligatorio y debe tener al menos 2 caracteres.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input formControlName="email" type="email" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+        Ingresa un email válido.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Teléfono</label>
+      <input formControlName="phone" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+        El teléfono es obligatorio y debe tener al menos 7 dígitos numéricos.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Empresa</label>
+      <input formControlName="company" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('company')?.invalid && profileForm.get('company')?.touched">
+        El nombre de la empresa es obligatorio y debe tener al menos 2 caracteres.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>NIT</label>
+      <input formControlName="nit" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('nit')?.invalid && profileForm.get('nit')?.touched">
+        El NIT es obligatorio y debe tener el formato 123456789-0.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Dirección</label>
+      <input formControlName="address" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('address')?.invalid && profileForm.get('address')?.touched">
+        La dirección es obligatoria y debe tener al menos 5 caracteres.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Ciudad</label>
+      <input formControlName="city" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('city')?.invalid && profileForm.get('city')?.touched">
+        La ciudad es obligatoria.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea formControlName="description" [readonly]="!isEditing" maxlength="300"></textarea>
+      <small *ngIf="profileForm.get('description')?.value">
+        {{ profileForm.get('description')?.value.length }}/300
+      </small>
+    </div>
+    <div *ngIf="!isEditing">
+      <button type="button" (click)="enableEdit()" class="btn-primary-action">Editar Perfil</button>
+    </div>
+    <div *ngIf="isEditing">
+      <button type="submit" [disabled]="profileForm.invalid || isLoading" class="btn-primary-action">
+        {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+      </button>
+      <button type="button" (click)="cancelEdit()" class="btn-secondary-action">Cancelar</button>
+    </div>
+    <div class="success-message" *ngIf="successMsg">{{ successMsg }}</div>
+    <div class="error-message" *ngIf="errorMsg">{{ errorMsg }}</div>
+  </form>
+</div>

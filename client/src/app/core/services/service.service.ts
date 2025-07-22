@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Service {
@@ -73,7 +73,7 @@ export interface CategoriesResponse {
   providedIn: 'root'
 })
 export class ServiceService {
-  private apiUrl = 'http://localhost:5000/api/services';
+  private apiUrl = 'http://localhost:5000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -130,28 +130,23 @@ export class ServiceService {
   deleteService(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getAllServices(): Observable<any> {
+    return this.http.get<any>('/api/services');
+  }
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProviderService {
-  private apiUrl = 'http://localhost:5000/api/providers';
-
   constructor(private http: HttpClient) {}
 
-  // Obtener perfil del proveedor actual
-  getMyProfile(): Observable<{message: string, data: ProviderProfile}> {
-    return this.http.get<{message: string, data: ProviderProfile}>(`${this.apiUrl}/profile`);
+  getMyProfile(): Observable<any> {
+    return this.http.get('/api/profile');
   }
 
-  // Actualizar perfil empresarial
-  updateProfile(data: UpdateProviderData): Observable<{message: string, data: ProviderProfile}> {
-    return this.http.put<{message: string, data: ProviderProfile}>(`${this.apiUrl}/profile`, data);
-  }
-
-  // Obtener perfil público de un proveedor
-  getPublicProfile(providerId: string): Observable<{message: string, data: any}> {
-    return this.http.get<{message: string, data: any}>(`${this.apiUrl}/public/${providerId}`);
+  updateProfile(data: any): Observable<any> {
+    return this.http.put('/api/profile', data);
   }
 }

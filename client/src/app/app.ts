@@ -1,9 +1,11 @@
+import { NgModule } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @Component({
   selector: 'app-root',
@@ -244,3 +246,11 @@ export class AppComponent implements OnInit {
     this.router.navigate(['/marketplace']);
   }
 }
+
+@NgModule({
+  // ...
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ]
+})
+export class AppModule { }

@@ -19,7 +19,7 @@
     <div class="category-filter">
       <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
         <option value="">📂 Todas las categorías</option>
-        <option *ngFor="let category of categories" [value]="category">
+        <option *ngFor="let category of filteredCategories" [value]="category">
           {{ category }}
         </option>
       </select>
@@ -46,33 +46,27 @@
     </div>
 
     <!-- Lista de servicios -->
-    <div class="services-grid" *ngIf="services.length > 0">
-      <div *ngFor="let service of services" class="service-card">
-        
+    <div class="services-grid" *ngIf="filteredServices.length > 0">
+      <div *ngFor="let service of filteredServices" class="service-card">
         <div class="service-header">
-          <h4>{{ service.name }}</h4>
-          <span class="service-category">{{ service.category }}</span>
+          <h4>{{ service.nombre }}</h4>
+          <span class="service-category">{{ service.categoria }}</span>
         </div>
 
         <div class="service-description">
-          <p>{{ service.description || 'Sin descripción disponible' }}</p>
+          <p>{{ service.descripcion || 'Sin descripción disponible' }}</p>
         </div>
 
         <div class="service-details">
           <div class="service-price">
             <span class="price-label">💰 Precio:</span>
-            <span class="price-value">${{ service.price | number:'1.0-0' }} COP</span>
-          </div>
-          
-          <div class="service-duration">
-            <span class="duration-label">⏱️ Duración:</span>
-            <span class="duration-value">{{ service.duration }} min</span>
+            <span class="price-value">${{ service.precio | number:'1.0-0' }} COP</span>
           </div>
         </div>
 
         <div class="service-provider">
           <span class="provider-label">👤 Proveedor:</span>
-          <span class="provider-name">{{ service.provider.user.name }}</span>
+          <span class="provider-name">{{ service.provider?.nombre || 'N/A' }}</span>
         </div>
 
         <div class="service-actions">
@@ -96,9 +90,9 @@
   </div>
 
   <!-- Registro -->
-  <div class="register-section">
+  <div class="marketplace-welcome">
     <h2>¿Nuevo en nuestra plataforma?</h2>
     <p>¡Crea una cuenta para empezar a ofrecer o contratar servicios!</p>
-    <button class="btn-register" (click)="goToRegister()">Crear cuenta</button>
+    <a routerLink="/register" class="btn-register-marketplace">Crear Cuenta</a>
   </div>
 </div>

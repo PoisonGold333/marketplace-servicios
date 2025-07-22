@@ -1,24 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
-interface CustomError extends Error {
-  statusCode?: number;
-  status?: string;
-}
-
-export const errorHandler = (
-  error: CustomError,
+export function errorHandler(
+  error: any,
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) {
   let statusCode = error.statusCode || 500;
   let message = error.message || 'Internal Server Error';
-
-  // Prisma errors
-  if (error.name === 'PrismaClientKnownRequestError') {
-    statusCode = 400;
-    message = 'Database operation failed';
-  }
 
   // JWT errors
   if (error.name === 'JsonWebTokenError') {
@@ -26,10 +15,16 @@ export const errorHandler = (
     message = 'Invalid token';
   }
 
-  // Validation errors
+  // Mongoose validation errors
   if (error.name === 'ValidationError') {
     statusCode = 400;
     message = 'Validation failed';
+  }
+
+  // Mongoose cast errors (e.g., invalid ObjectId)
+  if (error.name === 'CastError') {
+    statusCode = 400;
+    message = 'Invalid ID format';
   }
 
   console.error('Error:', error);
@@ -41,4 +36,4 @@ export const errorHandler = (
       ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
     }
   });
-};
+}

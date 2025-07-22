@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../models/User';
+import Provider from '../models/Provider';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
@@ -44,7 +45,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 // Registro de usuario
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, companyName, nit, address, city, phone, website, description } = req.body;
     if (!name || !email || !password || !role) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
@@ -64,6 +65,23 @@ export const register = async (req: Request, res: Response) => {
     });
 
     await user.save();
+
+    // Si el usuario es proveedor, crea el documento Provider
+    if (user.role === 'PROVIDER') {
+      if (!companyName || !nit || !address || !city || !phone || !description) {
+        return res.status(400).json({ error: 'Todos los campos de proveedor son obligatorios' });
+      }
+      await Provider.create({
+        user: user._id,
+        companyName,
+        nit,
+        address,
+        city,
+        phone,
+        website,
+        description
+      });
+    }
 
     res.status(201).json({ message: 'Usuario registrado correctamente' });
   } catch (error) {
