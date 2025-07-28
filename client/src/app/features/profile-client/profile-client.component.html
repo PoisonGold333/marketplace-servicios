@@ -1,0 +1,53 @@
+<mat-card class="client-card">
+  <!-- HEADER: avatar + nombre en la misma línea -->
+  <mat-card-header class="header-flex">
+    <div mat-card-avatar class="avatar-container">
+      <img [src]="clientData.avatarUrl" alt="Avatar cliente" />
+    </div>
+    <mat-card-title class="client-title">
+      {{ clientData.name }}
+      <!-- Botón pequeñito de editar -->
+      <button mat-icon-button color="primary" (click)="openEditProfile()">
+        <mat-icon class="emoji-icon">✏️</mat-icon>
+      </button>
+    </mat-card-title>
+  </mat-card-header>
+
+  <!-- INFO debajo -->
+  <mat-card-content class="info-block">
+    <div>✉️ {{ clientData.email }}</div>
+    <div>📞 {{ clientData.phone }}</div>
+    <div>📍 {{ clientData.address }}</div>
+    <div>🛒 Servicios adquiridos: {{ clientData.servicesCount }}</div>
+  </mat-card-content>
+
+  <!-- ACCIONES -->
+  <mat-card-actions class="action-buttons">
+    <button mat-stroked-button color="accent" (click)="openNotifications()">
+      <mat-icon class="emoji-icon">🔔</mat-icon>
+      <span>Notificaciones</span>
+    </button>
+    <button mat-stroked-button color="primary" (click)="openHistory()">
+      <mat-icon class="emoji-icon">📜</mat-icon>
+      <span>Historial</span>
+    </button>
+  </mat-card-actions>
+
+  <mat-divider></mat-divider>
+
+  <!-- HISTORIAL VISTO COMO TARJETAS -->
+  <section class="history-section">
+    <h3>Últimos servicios</h3>
+    <div class="services-grid">
+      <mat-card *ngFor="let svc of serviceHistory" class="service-card">
+        <mat-card-header>
+          <mat-card-title>{{ svc.name }}</mat-card-title>
+          <mat-card-subtitle>🗓️ {{ svc.date | date:'shortDate' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>💰 {{ svc.price | currency:'COP':'symbol' }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+</mat-card>

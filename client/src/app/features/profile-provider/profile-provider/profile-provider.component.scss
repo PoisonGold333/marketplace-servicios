@@ -1,0 +1,86 @@
+/* Perfil */
+.provider-card {
+  max-width: 800px;
+  margin: 1rem auto;
+}
+
+.avatar-container img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.provider-title {
+  font-size: 1.5rem;
+}
+
+.provider-subtitle {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.provider-content p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+/* Cabecera de servicios con acciones globales */
+.services-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem auto 1rem;
+  max-width: 800px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.small-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  min-width: 0;
+}
+
+/* Sección servicios */
+.services-section {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.services-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.actions-space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.price {
+  font-weight: bold;
+  margin-right: auto;
+}
+
+.no-results {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.no-results-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}

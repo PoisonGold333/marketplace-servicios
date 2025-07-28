@@ -1,0 +1,90 @@
+<!-- Perfil del Proveedor -->
+<ng-container *ngIf="providerData; else loadingProfile">
+  <mat-card class="provider-card">
+    <mat-card-header class="header-flex">
+      <div mat-card-avatar class="avatar-container">
+        <img [src]="providerData.avatarUrl" alt="Avatar proveedor" />
+      </div>
+      <div class="header-info">
+        <mat-card-title class="provider-title">
+         <br>
+         <br>
+          {{   providerData.companyName }}
+        </mat-card-title>
+        <mat-card-subtitle class="provider-subtitle">
+          🌱 {{ providerData.specialty }}
+        </mat-card-subtitle>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content class="provider-content">
+      <p class="description">{{ providerData.description }}</p>
+      <p><strong>📇 NIT:</strong> {{ providerData.nit }}</p>
+      <p><strong>📍 Dirección:</strong> {{ providerData.address }}, {{ providerData.city }}</p>
+      <p><strong>📞 Teléfono:</strong> {{ providerData.phone }}</p>
+      <p *ngIf="providerData.website">
+        <strong>🔗 Web:</strong>
+        <a [href]="providerData.website" target="_blank">{{ providerData.website }}</a>
+      </p>
+    </mat-card-content>
+
+    <mat-card-actions align="end" class="action-buttons">
+      <button mat-stroked-button color="primary" class="small-btn" (click)="openEditProfileDialog()">
+        ✏️ Editar Perfil
+      </button>
+      <button mat-stroked-button color="accent" class="small-btn" (click)="openEditAvailabilityDialog()">
+        ⏰ Editar Disponibilidad
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</ng-container>
+
+<ng-template #loadingProfile>
+  <div class="spinner-container">
+    <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+  </div>
+</ng-template>
+
+<!-- Sección de Servicios -->
+<section class="services-section">
+  <div class="services-header">
+    <h2>Mis Servicios</h2>
+    <div class="header-actions">
+      <button mat-flat-button color="primary" class="small-btn" (click)="openAddServiceDialog()">
+        ➕ Nuevo Servicio
+      </button>
+      <button mat-flat-button color="accent" class="small-btn" (click)="openGlobalEditService()">
+        ✏️ Editar Servicio
+      </button>
+      <button mat-flat-button color="warn" class="small-btn" (click)="openGlobalDeleteService()">
+        🗑️ Eliminar Servicio
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="services?.length; else noServices">
+    <div class="services-grid">
+      <mat-card *ngFor="let svc of services" class="service-card">
+        <mat-card-header>
+          <mat-card-title>{{ svc.name }}</mat-card-title>
+          <mat-card-subtitle>
+            <div>🏷️ Categoría {{ svc.category }}</div>
+            <div>💰 Precio {{ svc.price | currency:'COP':'symbol':'1.0-0' }}</div>
+            <div>⏱️ Experiencia {{ svc.duration }} años</div>
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ svc.description || 'Sin descripción disponible' }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+
+  <ng-template #noServices>
+    <div class="no-results">
+      <div class="no-results-icon">🔍</div>
+      <h3>No se encontraron servicios</h3>
+      <p>Aún no has agregado ningún servicio.</p>
+    </div>
+  </ng-template>
+</section>

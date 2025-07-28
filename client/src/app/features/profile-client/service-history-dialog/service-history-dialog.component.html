@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>📜 Historial de Servicios</h2>
+
+<mat-dialog-content>
+  <mat-list *ngIf="history.length; else noHistory">
+    <mat-list-item *ngFor="let svc of history">
+      <mat-icon matListIcon>check_circle</mat-icon>
+      <div matLine>{{ svc.name }}</div>
+      <div matLine class="secondary">
+        🗓️ {{ svc.date | date:'shortDate' }} — 💰 {{ svc.price | currency:'COP':'symbol' }}
+      </div>
+    </mat-list-item>
+  </mat-list>
+
+  <ng-template #noHistory>
+    <p class="no-history">No hay servicios adquiridos.</p>
+  </ng-template>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Cerrar</button>
+</mat-dialog-actions>

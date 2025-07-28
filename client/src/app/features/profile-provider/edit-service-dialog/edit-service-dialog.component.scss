@@ -1,0 +1,75 @@
+.client-card {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* Evita que el texto monte la imagen */
+.header-info {
+  margin-left: 1rem;
+}
+
+/* Flex header */
+mat-card-header {
+  display: flex;
+  align-items: center;
+}
+
+/* Avatar circular */
+.avatar-container img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+/* Título un poco más grande */
+.title-row {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+/* Subtitle en columna */
+.subtitle-block {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.95rem;
+  color: rgba(0,0,0,0.7);
+}
+
+/* Botones estilo provider */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin: 1rem 0;
+}
+
+.action-buttons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Sección servicios en grid */
+.services-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  margin-top: 1rem;
+}
+
+.service-card {
+  /* Match height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.history-section h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}

@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Editar Perfil</h2>
+
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="fill">
+    <mat-label>Empresa</mat-label>
+    <input matInput formControlName="companyName" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>NIT</mat-label>
+    <input matInput formControlName="nit" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Dirección</mat-label>
+    <input matInput formControlName="address" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Ciudad</mat-label>
+    <input matInput formControlName="city" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Teléfono</mat-label>
+    <input matInput formControlName="phone" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Sitio web</mat-label>
+    <input matInput formControlName="website" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Descripción</mat-label>
+    <textarea matInput formControlName="description" rows="3"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary"
+          [disabled]="form.invalid"
+          (click)="onSave()">
+    Guardar
+  </button>
+</mat-dialog-actions>

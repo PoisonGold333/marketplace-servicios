@@ -1,0 +1,98 @@
+<div class="marketplace-container">
+  <!-- Header del Marketplace -->
+  <div class="marketplace-header">
+    <h1>🛍️ Marketplace de Servicios</h1>
+    <p>Encuentra el servicio que necesitas</p>
+  </div>
+
+  <!-- Filtros y búsqueda -->
+  <div class="filters-section">
+    <div class="search-bar">
+      <input 
+        type="text" 
+        placeholder="🔍 Buscar servicios..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input">
+    </div>
+    
+    <div class="category-filter">
+      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
+        <option value="">📂 Todas las categorías</option>
+        <option *ngFor="let category of filteredCategories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando servicios...</p>
+  </div>
+
+  <!-- Resultados -->
+  <div *ngIf="!isLoading" class="results-section">
+    <div class="results-header">
+      <h3>📋 Servicios disponibles ({{ services.length }})</h3>
+    </div>
+
+    <!-- Sin resultados -->
+    <div *ngIf="services.length === 0" class="no-results">
+      <div class="no-results-icon">🔍</div>
+      <h3>No se encontraron servicios</h3>
+      <p>Intenta con otros términos de búsqueda o categorías</p>
+    </div>
+
+    <!-- Lista de servicios -->
+    <div class="services-grid" *ngIf="filteredServices.length > 0">
+      <div *ngFor="let service of filteredServices" class="service-card">
+        <div class="service-header">
+          <h4>{{ service.nombre }}</h4>
+          <span class="service-category">{{ service.categoria }}</span>
+        </div>
+
+        <div class="service-description">
+          <p>{{ service.descripcion || 'Sin descripción disponible' }}</p>
+        </div>
+
+        <div class="service-details">
+          <div class="service-price">
+            <span class="price-label">💰 Precio:</span>
+            <span class="price-value">${{ service.precio | number:'1.0-0' }} COP</span>
+          </div>
+        </div>
+
+        <div class="service-provider">
+          <span class="provider-label">👤 Proveedor:</span>
+          <span class="provider-name">{{ service.provider?.nombre || 'N/A' }}</span>
+        </div>
+
+        <div class="service-actions">
+          <button class="btn-contact" (click)="contactProvider(service)">
+            📞 Contactar
+          </button>
+          <button class="btn-book" (click)="bookService(service)">
+            📅 Reservar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="error-message">
+    <div class="error-icon">❌</div>
+    <h3>Error al cargar servicios</h3>
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadServices()" class="btn-retry">🔄 Reintentar</button>
+  </div>
+
+  <!-- Registro -->
+  <div class="marketplace-welcome">
+    <h2>¿Nuevo en nuestra plataforma?</h2>
+    <p>¡Crea una cuenta para empezar a ofrecer o contratar servicios!</p>
+    <a routerLink="/register" class="btn-register-marketplace">Crear Cuenta</a>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>📆 Editar Disponibilidad</h2>
+
+<mat-dialog-content class="dialog-content">
+  <label>Selecciona los días disponibles:</label>
+  <div class="days-grid">
+    <mat-checkbox
+      *ngFor="let day of daysOfWeek"
+      [checked]="isSelected(day)"
+      (change)="toggleDay(day)"
+    >
+      {{ day }}
+    </mat-checkbox>
+  </div>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Hora inicio</mat-label>
+    <input matInput type="time" formControlName="startTime" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Hora fin</mat-label>
+    <input matInput type="time" formControlName="endTime" />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="actions">
+  <button mat-stroked-button color="warn" (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+</mat-dialog-actions>

@@ -1,0 +1,78 @@
+.client-card {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* HEADER: avatar + título alineados */
+.header-flex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0;
+}
+
+/* Avatar */
+.avatar-container img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+/* Título con botón de editar integrado */
+.client-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Bloque de información debajo */
+.info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Botones de acciones */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+.action-buttons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Ajuste para emojis dentro de mat-icon */
+.emoji-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Grid de servicios */
+.services-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  margin-top: 1rem;
+}
+.service-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.history-section h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
