@@ -147,4 +147,25 @@ export class MarketplaceComponent implements OnInit {
       return matchesCategory && matchesSearchTerm;
     });
   }
+
+  getDefaultImage(categoria: string): string {
+    const images: { [key: string]: string } = {
+      'Aseo': 'assets/img/aseo.jpg',
+      'Belleza': 'assets/img/belleza.jpeg',
+      'Deporte': 'assets/img/deporte.jpg',
+      'Derecho': 'assets/img/derecho.jpeg',
+      'Desarrollo': 'assets/img/desarrollo.jpg',
+      'Diseño': 'assets/img/diseño.jpeg',
+      'Educación': 'assets/img/educacion.jpg',
+      'Eventos': 'assets/img/eventos.jpeg',
+      'Fotografía': 'assets/img/fotografia.jpg',
+      'Hogar': 'assets/img/hogar.jpeg',
+      'Mascotas': 'assets/img/mascotas.jpeg',
+      'Salud': 'assets/img/salud.jpeg',
+      'Tecnología': 'assets/img/tecnologia.jpeg',
+      'Traducción': 'assets/img/traduccion.jpeg',
+      'default': 'assets/img/default-service.jpg'
+    };
+    return images[categoria] || images['default'];
+  }
 }

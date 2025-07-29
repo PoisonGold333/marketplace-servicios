@@ -7,10 +7,10 @@ export class ProfileService {
   constructor(private http: HttpClient) {}
 
   getMyProfile(): Observable<any> {
-    return this.http.get('/api/profile');
+    return this.http.get('/api/providers/my-profile');
   }
 
   updateProfile(data: any): Observable<any> {
-    return this.http.put('/api/profile', data);
+    return this.http.put('/api/providers/my-profile', data);
   }
 }

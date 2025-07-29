@@ -48,6 +48,12 @@
     <!-- Lista de servicios -->
     <div class="services-grid" *ngIf="filteredServices.length > 0">
       <div *ngFor="let service of filteredServices" class="service-card">
+        <img
+          class="service-image"
+          [src]="service.imagenUrl || getDefaultImage(service.categoria)"
+          alt="Imagen del servicio"
+        />
+
         <div class="service-header">
           <h4>{{ service.nombre }}</h4>
           <span class="service-category">{{ service.categoria }}</span>
@@ -93,6 +99,8 @@
   <div class="marketplace-welcome">
     <h2>¿Nuevo en nuestra plataforma?</h2>
     <p>¡Crea una cuenta para empezar a ofrecer o contratar servicios!</p>
-    <a routerLink="/register" class="btn-register-marketplace">Crear Cuenta</a>
+    <button class="btn-register-marketplace" (click)="goToRegister()">
+      Crear Cuenta
+    </button>
   </div>
 </div>

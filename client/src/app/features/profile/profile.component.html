@@ -31,8 +31,8 @@
     </div>
     <div class="form-group">
       <label>Empresa</label>
-      <input formControlName="company" type="text" [readonly]="!isEditing" />
-      <div class="error-message" *ngIf="profileForm.get('company')?.invalid && profileForm.get('company')?.touched">
+      <input formControlName="nombreEmpresa" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('nombreEmpresa')?.invalid && profileForm.get('nombreEmpresa')?.touched">
         El nombre de la empresa es obligatorio y debe tener al menos 2 caracteres.
       </div>
     </div>
@@ -45,8 +45,8 @@
     </div>
     <div class="form-group">
       <label>Dirección</label>
-      <input formControlName="address" type="text" [readonly]="!isEditing" />
-      <div class="error-message" *ngIf="profileForm.get('address')?.invalid && profileForm.get('address')?.touched">
+      <input formControlName="direccion" type="text" [readonly]="!isEditing" />
+      <div class="error-message" *ngIf="profileForm.get('direccion')?.invalid && profileForm.get('direccion')?.touched">
         La dirección es obligatoria y debe tener al menos 5 caracteres.
       </div>
     </div>

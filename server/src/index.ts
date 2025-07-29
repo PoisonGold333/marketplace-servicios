@@ -16,7 +16,7 @@ import passport from './config/passport';
 // Routes
 import authRoutes from './routes/auth';
 import serviceRoutes from './routes/serviceRoutes';
-import providersRoutes from './routes/providers';
+import providerRoutes from './routes/providerRoutes';
 import availabilityRoutes from './routes/availability';
 import contractRoutes from './routes/contracts';
 import bookingRoutes from './routes/bookings';
@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 // Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
-app.use('/api', providersRoutes);
+app.use('/api/providers', providerRoutes);
 app.use('/api/availability', availabilityRoutes);
 app.use('/api/contracts', contractRoutes);
 app.use('/api/bookings', bookingRoutes);

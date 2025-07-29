@@ -24,14 +24,15 @@ export class ProfileComponent implements OnInit {
     private fb: FormBuilder,
     private profileService: ProfileService
   ) {
+    
     this.profileForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^\d{7,}$/)]],
-      company: ['', [Validators.required, Validators.minLength(2)]],
+      nombreEmpresa: ['', [Validators.required, Validators.minLength(2)]],
       nit: ['', [Validators.required, Validators.pattern(/^\d{6,}-\d{1}$/)]],
-      address: ['', [Validators.required, Validators.minLength(5)]],
-      city: ['', Validators.required],
+      direccion: ['', [Validators.required, Validators.minLength(5)]],
+      city: ['', [Validators.required]],
       description: ['', [Validators.maxLength(300)]],
       avatar: [null]
     });
@@ -45,14 +46,22 @@ export class ProfileComponent implements OnInit {
     this.isLoading = true;
     this.profileService.getMyProfile().subscribe({
       next: (resp: any) => {
-        this.profileForm.patchValue(resp.data);
-        if (resp.data.avatarUrl) {
-          this.avatarPreview = resp.data.avatarUrl;
-        }
+        const data = resp.data || resp;
+        // Actualiza el FormGroup con los datos recibidos
+        this.profileForm.setValue({
+          name: data.name || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          nombreEmpresa: data.nombreEmpresa || '',
+          nit: data.nit || '',
+          direccion: data.direccion || '',
+          city: data.city || '', // <-- Agregado
+          description: data.description || '', // <-- Agregado
+          avatar: null
+        });
         this.isLoading = false;
       },
       error: (err) => {
-        console.log('Error al cargar el perfil:', err);
         this.errorMsg = 'Error al cargar el perfil';
         this.isLoading = false;
       }

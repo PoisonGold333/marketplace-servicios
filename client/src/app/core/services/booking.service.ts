@@ -38,7 +38,7 @@ export interface Booking {
 
 export interface CreateBookingData {
   serviceId: string;
-  providerId: string; // <-- AGREGA ESTA LÍNEA
+  providerId: string;
   scheduledDate: string;
   scheduledTime: string;
   clientName: string;

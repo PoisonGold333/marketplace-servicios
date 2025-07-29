@@ -5,7 +5,6 @@ import { authMiddleware } from '../middleware/auth';
 const router = Router();
 
 router.get('/', authMiddleware, async (req, res) => {
-
   const userId = (req.user as any)?._id;
   if (!req.user || !userId) {
     return res.status(401).json({ message: 'No autorizado' });

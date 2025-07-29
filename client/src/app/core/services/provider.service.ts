@@ -9,10 +9,10 @@ export class ProviderService {
   constructor(private http: HttpClient) {}
 
   getProfile(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/profile`);
+    return this.http.get(`${this.apiUrl}/my-profile`);
   }
 
   updateProfile(data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/profile`, data);
+    return this.http.put(`${this.apiUrl}/my-profile`, data);
   }
 }
