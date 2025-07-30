@@ -1,0 +1,36 @@
+.rate-form {
+  .full-width {
+    width: 100%;
+  }
+
+  .star-picker {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+
+    .star {
+      cursor: pointer;
+      mat-icon {
+        font-size: 32px;
+        color: rgba(0,0,0,0.2);
+        transition: color 0.2s;
+      }
+
+      &.filled mat-icon {
+        color: #ffb400;
+      }
+
+      &:not(:last-child) {
+        margin-right: 0.25rem;
+      }
+    }
+  }
+}
+
+mat-dialog-content {
+  padding-top: 0;
+}
+
+mat-dialog-actions {
+  margin-top: 1rem;
+}

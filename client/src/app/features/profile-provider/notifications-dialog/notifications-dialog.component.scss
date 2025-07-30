@@ -1,0 +1,14 @@
+.no-notes {
+  font-style: italic;
+  color: rgba(0,0,0,0.6);
+  padding: 1rem 0;
+}
+
+mat-list-item {
+  align-items: start;
+}
+
+mat-icon[matListIcon] {
+  margin-right: 0.5rem;
+  color: #1976d2;
+}

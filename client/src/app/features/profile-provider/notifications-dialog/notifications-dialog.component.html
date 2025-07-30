@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>🔔 Notificaciones</h2>
+
+<mat-dialog-content>
+  <mat-list *ngIf="notifications.length; else noNotes">
+    <mat-list-item *ngFor="let note of notifications">
+      <mat-icon matListIcon>notifications</mat-icon>
+      <div matLine>{{ note }}</div>
+    </mat-list-item>
+  </mat-list>
+  <ng-template #noNotes>
+    <p class="no-notes">No tienes notificaciones nuevas.</p>
+  </ng-template>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>

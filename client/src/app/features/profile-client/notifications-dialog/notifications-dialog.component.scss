@@ -1,4 +1,20 @@
+/* src/app/features/profile-client/notifications-dialog/notifications-dialog.component.scss */
+
+mat-dialog-content {
+  max-height: 300px;
+  overflow: auto;
+}
+
 mat-list-item {
-  align-items: start;
-  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+mat-list-item mat-icon {
+  margin-right: 0.5rem;
+  color: #2575fc;
+}
+
+mat-dialog-actions {
+  padding: 1rem;
 }

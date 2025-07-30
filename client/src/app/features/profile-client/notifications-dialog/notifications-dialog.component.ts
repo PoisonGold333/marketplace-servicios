@@ -1,9 +1,11 @@
+// src/app/features/profile-client/notifications-dialog/notifications-dialog.component.ts
+
 import { Component } from '@angular/core';
-import { CommonModule }               from '@angular/common';
+import { CommonModule }                   from '@angular/common';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatListModule }              from '@angular/material/list';
-import { MatButtonModule }            from '@angular/material/button';
-import { MatIconModule }           from '@angular/material/icon'; 
+import { MatListModule }                 from '@angular/material/list';
+import { MatButtonModule }               from '@angular/material/button';
+import { MatIconModule }                 from '@angular/material/icon';
 
 @Component({
   selector: 'app-notifications-dialog',
@@ -27,7 +29,7 @@ export class NotificationsDialogComponent {
 
   constructor(private dialogRef: MatDialogRef<NotificationsDialogComponent>) {}
 
-  onClose() {
+  onClose(): void {
     this.dialogRef.close();
   }
 }

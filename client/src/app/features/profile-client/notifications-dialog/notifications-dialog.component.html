@@ -1,14 +1,19 @@
-<h2 mat-dialog-title>🔔 Notificaciones</h2>
+<!-- src/app/features/profile-client/rate-service-dialog/rate-service-dialog.component.html -->
+
+<h2 mat-dialog-title>Notificaciones</h2>
 
 <mat-dialog-content>
   <mat-list>
     <mat-list-item *ngFor="let note of notifications">
       <mat-icon matListIcon>notifications</mat-icon>
-      <div matLine>{{ note }}</div>
+      <span matLine>{{ note }}</span>
     </mat-list-item>
   </mat-list>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">Cerrar</button>
+  <button mat-flat-button color="primary" (click)="onClose()">
+    <mat-icon>close</mat-icon>
+    Cerrar
+  </button>
 </mat-dialog-actions>

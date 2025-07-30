@@ -7,12 +7,16 @@
       </div>
       <div class="header-info">
         <mat-card-title class="provider-title">
-         <br>
-         <br>
-          {{   providerData.companyName }}
+          {{ providerData.companyName }}
         </mat-card-title>
         <mat-card-subtitle class="provider-subtitle">
           🌱 {{ providerData.specialty }}
+          <span class="star-rating">
+            <ng-container *ngFor="let _ of [1,2,3,4,5]; let i = index">
+              <mat-icon *ngIf="i < providerData.rating; else empty"> ⭐ </mat-icon>
+              <ng-template #empty><mat-icon> ✰  </mat-icon>   </ng-template>
+            </ng-container>
+          </span>
         </mat-card-subtitle>
       </div>
     </mat-card-header>
@@ -34,6 +38,9 @@
       </button>
       <button mat-stroked-button color="accent" class="small-btn" (click)="openEditAvailabilityDialog()">
         ⏰ Editar Disponibilidad
+      </button>
+      <button mat-stroked-button color="warn" class="small-btn" (click)="openNotificationsDialog()">
+        🔔 Notificaciones
       </button>
     </mat-card-actions>
   </mat-card>
@@ -68,9 +75,9 @@
         <mat-card-header>
           <mat-card-title>{{ svc.name }}</mat-card-title>
           <mat-card-subtitle>
-            <div>🏷️ Categoría {{ svc.category }}</div>
-            <div>💰 Precio {{ svc.price | currency:'COP':'symbol':'1.0-0' }}</div>
-            <div>⏱️ Experiencia {{ svc.duration }} años</div>
+            <div>🏷️ Categoría: {{ svc.category }}</div>
+            <div>💰 Precio: {{ svc.price | currency:'COP':'symbol':'1.0-0' }}</div>
+            <div>⏱️ Duración: {{ svc.duration }} horas</div>
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
@@ -87,4 +94,24 @@
       <p>Aún no has agregado ningún servicio.</p>
     </div>
   </ng-template>
+</section>
+
+<!-- Servicios Activos -->
+<section class="active-services-section">
+  <h2>Servicios Activos</h2>
+  <ul class="active-services-list">
+    <li *ngFor="let svc of activeServices" class="active-service-item">
+      <span class="status-indicator" [ngClass]="svc.status"></span>
+      <div class="service-info">
+        <div class="service-row">
+          <strong>{{ svc.name }}</strong>
+          <span class="service-duration">⌛ {{ svc.duration }} h</span>
+        </div>
+        <div class="service-row">
+          <small>🏷️ {{ svc.category }}</small>
+          <small>🏢 {{ svc.company }}</small>
+        </div>
+      </div>
+    </li>
+  </ul>
 </section>

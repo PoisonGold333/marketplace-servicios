@@ -21,6 +21,22 @@ export const routes: Routes = [
     path: 'dashboard', 
     loadComponent: () => import('./features/dashboard/dashboard').then(m => m.DashboardComponent) 
   },
+
+  {
+   path : 'profile-provider',
+    loadComponent: () =>import('./features/profile-provider/profile-provider.component').then(
+    (m) => m.ProfileProviderComponent
+   )
+        
+},
+   
+  {
+    path: 'profile-client',
+    loadComponent: () =>
+      import('./features/profile-client/profile-client.component').then(
+        (m) => m.ProfileClientComponent
+      )
+  },
   { path: 'my-availability', loadComponent: () => import('./features/provider-availability/provider-availability.component').then(m => m.ProviderAvailabilityComponent) },
   
   // Booking route
@@ -41,6 +57,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/forgotPassword/forgot-password.component').then(m => m.ForgotPasswordComponent)
   },
+
+  
   
   // Catch all
   { path: '**', redirectTo: '/marketplace' }

@@ -1,53 +1,72 @@
 <mat-card class="client-card">
-  <!-- HEADER: avatar + nombre en la misma línea -->
-  <mat-card-header class="header-flex">
-    <div mat-card-avatar class="avatar-container">
-      <img [src]="clientData.avatarUrl" alt="Avatar cliente" />
+  <!-- Header -->
+  <div class="header-flex">
+    <div class="avatar-container">
+      <img [src]="clientData.avatarUrl || defaultAvatar" alt="Avatar cliente" />
     </div>
-    <mat-card-title class="client-title">
-      {{ clientData.name }}
-      <!-- Botón pequeñito de editar -->
-      <button mat-icon-button color="primary" (click)="openEditProfile()">
-        <mat-icon class="emoji-icon">✏️</mat-icon>
-      </button>
-    </mat-card-title>
-  </mat-card-header>
+    <div class="header-info">
+      <h1 class="client-title">
+        {{ clientData.name }}
+        <button mat-icon-button (click)="openEditProfile()" color="accent">
+          <mat-icon>✏️</mat-icon>
+        </button>
+      </h1>
+      <div class="client-subtitle">
+        <mat-icon>📭</mat-icon> {{ clientData.email }}
+        <mat-icon>⭐</mat-icon><!-- aquí tus estrellas -->
+      </div>
+    </div>
+  </div>
 
-  <!-- INFO debajo -->
-  <mat-card-content class="info-block">
-    <div>✉️ {{ clientData.email }}</div>
-    <div>📞 {{ clientData.phone }}</div>
-    <div>📍 {{ clientData.address }}</div>
-    <div>🛒 Servicios adquiridos: {{ clientData.servicesCount }}</div>
-  </mat-card-content>
+  <!-- Datos del cliente -->
+  <div class="client-content">
+    <p><mat-icon> 📱 cel </mat-icon> {{ clientData.phone }}</p>
+    <p><mat-icon>🏚️ </mat-icon> {{ clientData.address }}</p>
+  </div>
 
-  <!-- ACCIONES -->
-  <mat-card-actions class="action-buttons">
-    <button mat-stroked-button color="accent" (click)="openNotifications()">
-      <mat-icon class="emoji-icon">🔔</mat-icon>
-      <span>Notificaciones</span>
+  <!-- Botones -->
+  <div class="action-buttons">
+    <button mat-stroked-button color="primary" (click)="openEditProfile()">
+      <mat-icon>✏️</mat-icon> Editar Perfil
     </button>
-    <button mat-stroked-button color="primary" (click)="openHistory()">
-      <mat-icon class="emoji-icon">📜</mat-icon>
-      <span>Historial</span>
+    <button mat-stroked-button color="warn" (click)="openNotifications()">
+      <mat-icon>💡</mat-icon> Notificaciones
     </button>
-  </mat-card-actions>
+  </div>
 
-  <mat-divider></mat-divider>
+  <!-- Servicios Activos -->
+  <section class="active-services-section">
+    <h2>Servicios Activos</h2>
+    <ul class="active-services-list">
+      <li *ngFor="let svc of activeServices"
+          class="active-service-item {{ svc.status }}">
+        <span class="status-indicator {{ svc.status }}"></span>
+        <div class="service-info">
+          <div class="service-row">
+            <strong>{{ svc.name }}</strong>
+            <small class="service-duration">⏱️ {{ svc.duration }} h</small>
+          </div>
+          <div class="service-row">
+            <small>🏷️ {{ svc.category }}</small>
+            <small>🏢 {{ svc.company }}</small>
+          </div>
+        </div>
+        <button *ngIf="svc.status === 'terminado'"
+                mat-stroked-button color="primary"
+                (click)="openRateDialog(svc)">
+          <mat-icon>⭐</mat-icon> Calificar Servicio
+        </button>
+      </li>
+    </ul>
+  </section>
 
-  <!-- HISTORIAL VISTO COMO TARJETAS -->
+  <!-- Historial de Servicios -->
   <section class="history-section">
-    <h3>Últimos servicios</h3>
-    <div class="services-grid">
-      <mat-card *ngFor="let svc of serviceHistory" class="service-card">
-        <mat-card-header>
-          <mat-card-title>{{ svc.name }}</mat-card-title>
-          <mat-card-subtitle>🗓️ {{ svc.date | date:'shortDate' }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>💰 {{ svc.price | currency:'COP':'symbol' }}</p>
-        </mat-card-content>
-      </mat-card>
+    <h2>Historial de Servicios</h2>
+    <div *ngFor="let item of serviceHistory" class="history-item">
+      <span>{{ item.name }} —</span>
+      <span class="history-date">{{ item.date | date:'M/d/yy' }}</span>
+      <span class="history-price">💰 COP{{ item.price }}</span>
     </div>
   </section>
 </mat-card>
